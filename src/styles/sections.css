@@ -606,23 +606,92 @@
   color: var(--fg-dim);
 }
 
-/* Signature stamps sit in the flow after the meta block so they stay attached
+/* Evidence figures sit in the flow after the meta block so they stay attached
    to the copy however the panel's height is resolved. Each project aligns its
-   stamp differently. */
+   own. Every figure plots numbers that panel already states in words, so it
+   can restate the claim but never outrun it. */
 .panel__mark {
   transform: translate3d(0, calc((1 - var(--t)) * 20px), 0);
   margin-top: clamp(1.4rem, 3vh, 2.2rem);
   color: var(--accent);
+  width: 100%;
 }
 
-.panel__mark svg {
+/* viewBox units are sized to match the panel column at its widest, so one unit
+   reads as roughly one pixel and type set inside a figure sits in the same
+   register as the page around it. */
+.panel__mark .viz {
+  display: block;
+  width: 100%;
+  height: auto;
   overflow: visible;
 }
 
 .panel__mark path,
+.panel__mark line,
 .panel__mark ellipse,
 .panel__mark circle {
   vector-effect: non-scaling-stroke;
+}
+
+/* One clock for every step in a figure. Each step begins at its own delay and
+   runs for a quarter of the panel's progress; the clamp stops late steps from
+   inverting once the panel is fully in. Because --s is derived from --t alone,
+   there is no state to store: scrubbing back up replays the build in reverse,
+   exactly. */
+.viz-step {
+  --s: clamp(0, calc((var(--t) - var(--d, 0)) * 4), 1);
+}
+
+.viz-d0 {
+  --d: 0;
+}
+
+.viz-d1 {
+  --d: 0.1;
+}
+
+.viz-d2 {
+  --d: 0.22;
+}
+
+.viz-d3 {
+  --d: 0.34;
+}
+
+.viz-d4 {
+  --d: 0.48;
+}
+
+/* Strokes carry pathLength="100", so one dash length hides or reveals any line
+   whatever its real extent. The fallback keeps a utility usable on its own:
+   unstepped means fully drawn. */
+.viz-draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: calc((1 - var(--s, 1)) * 100);
+}
+
+/* `opacity` belongs to the reveal and nothing else. Dimming a figure's parts is
+   done with fill-opacity/stroke-opacity instead, because a design `opacity` on
+   an element that also carries viz-fade or viz-pop would silently out-specify
+   the reveal and leave that part sitting at full strength from the first
+   frame. Keeping the two channels separate is what stops that. */
+.viz-fade {
+  opacity: var(--s, 1);
+}
+
+.viz-pop {
+  opacity: var(--s, 1);
+  transform: scale(calc(0.55 + 0.45 * var(--s, 1)));
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Scales in X only, from the left edge of the shape's own box. */
+.viz-grow {
+  transform: scaleX(var(--s, 1));
+  transform-box: fill-box;
+  transform-origin: left center;
 }
 
 /* AegisLogix — clinical, wide-tracked, hairline meta table, detection mark -- */
@@ -673,43 +742,62 @@
   align-self: flex-end;
 }
 
-.panel--vision .mk-bracket {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1;
-  opacity: 0.7;
+.panel--vision .viz-cap,
+.panel--vision .viz-tick,
+.panel--vision .viz-val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
-.panel--vision .mk-box {
+.panel--vision .viz-cap {
+  font-size: 0.56rem;
+  letter-spacing: 0.2em;
+  fill: var(--fg-label);
+}
+
+/* The scale is stated, not implied: a bare rule would leave the reader to
+   assume it runs 0 to 1. */
+.panel--vision .viz-axis line {
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-opacity: 0.4;
+}
+
+.panel--vision .viz-run {
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-opacity: 0.95;
+}
+
+.panel--vision .viz-dot--from {
   fill: none;
   stroke: var(--accent);
   stroke-width: 1.2;
+  stroke-opacity: 0.75;
 }
 
-.panel--vision .mk-scan {
+.panel--vision .viz-dot--to {
+  fill: var(--accent);
+}
+
+.panel--vision .viz-val {
+  font-size: 0.72rem;
+  fill: var(--fg);
+}
+
+.panel--vision .viz-tick {
+  font-size: 0.52rem;
+  fill: var(--fg-dim);
+}
+
+/* The Dent score is one class inside the same run, not a third endpoint, so it
+   hangs from its own marker and is never joined to the series line. */
+.panel--vision .viz-dent {
   fill: none;
   stroke: var(--accent);
   stroke-width: 1;
-  stroke-dasharray: 4 3;
-  opacity: 0.85;
-}
-
-.panel--vision .mk-conf {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1;
-  opacity: 0.4;
-}
-
-.panel--vision .mk-conf--fill {
-  opacity: 0.9;
-}
-
-.panel--vision .mk-tick {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1;
-  opacity: 0.45;
+  stroke-dasharray: 2 3;
+  stroke-opacity: 0.7;
 }
 
 /* Attendly — display serif with a semester-progress rule, columnar meta ----- */
@@ -794,29 +882,41 @@
 
 .panel--product .panel__mark {
   align-self: flex-start;
+  /* Attendly's panel is the densest of the three: a display title, a display
+     summary and a three-column meta table already fill the column, so its
+     figure takes a tighter gap above it than the others rather than letting
+     the panel outgrow its box. */
+  margin-top: clamp(1rem, 2.2vh, 1.6rem);
 }
 
-.panel--product .mk-rule {
+.panel--product .viz-cap,
+.panel--product .viz-sem {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Twenty marks and a three-part rule, counted rather than scaled: no axis
+   implies a magnitude the project never reported. */
+.panel--product .viz-cohort rect {
+  fill: var(--accent);
+  fill-opacity: 0.55;
+}
+
+.panel--product .viz-cap {
+  fill: var(--fg-label);
+}
+
+.panel--product .viz-rule {
   fill: none;
   stroke: var(--accent);
   stroke-width: 1;
-  opacity: 0.3;
+  stroke-opacity: 0.35;
 }
 
-.panel--product .mk-grid rect {
-  fill: var(--accent);
-  opacity: 0.22;
-}
-
-.panel--product .mk-grid rect:nth-child(3) {
-  opacity: 0.75;
-}
-
-.panel--product .mk-recovery {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.2;
-  stroke-linecap: round;
+.panel--product .viz-sem {
+  fill: var(--fg-dim);
 }
 
 /* GitRunByKaru — italic display, inline meta, terminal mark ---------------- */
@@ -872,35 +972,52 @@
   align-self: flex-end;
 }
 
-.panel--tooling .mk-window {
+.panel--tooling .viz-window {
   fill: none;
   stroke: var(--accent);
   stroke-width: 1;
-  opacity: 0.55;
+  stroke-opacity: 0.4;
 }
 
-.panel--tooling .mk-titlebar {
+.panel--tooling .viz-rule {
   fill: none;
   stroke: var(--accent);
   stroke-width: 1;
-  opacity: 0.55;
+  stroke-opacity: 0.45;
 }
 
-.panel--tooling .mk-caret,
-.panel--tooling .mk-cmd {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.panel--tooling .mk-cmd {
-  opacity: 0.75;
-}
-
-.panel--tooling .mk-block {
+.panel--tooling .viz-dots circle {
   fill: var(--accent);
+  fill-opacity: 0.5;
+}
+
+.panel--tooling .viz-cap {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  fill: var(--fg-label);
+}
+
+.panel--tooling .viz-cmd {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  fill: var(--fg);
+}
+
+.panel--tooling .viz-cursor {
+  fill: var(--accent);
+  fill-opacity: 0.85;
+}
+
+/* "Reported", because the figure is a recorded figure and must not be read as
+   a live registry count the moment the page loads. */
+.panel--tooling .viz-figure {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.5rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  fill: var(--fg);
 }
 
 /* HUD + rail ------------------------------------------------------------ */
@@ -1268,9 +1385,24 @@
 }
 
 .contact__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding-bottom: 0.3rem;
   border-bottom: 1px solid var(--paper-line);
   transition: border-color 0.35s var(--ease-out);
+}
+
+/* The mark leads the word but does not compete with it: at 14px against
+   10.88px of mono caps it sits just above the cap height, which is where a
+   pictogram reads as an attribute of the link rather than as a logo wall. */
+.contact__icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  /* Optical centring: a filled mark's mass sits low in the box. */
+  transform: translateY(-0.5px);
 }
 
 .contact__links a:hover {
@@ -1354,14 +1486,6 @@
   .work__panels {
     width: min(40ch, 46vw);
   }
-
-  .panel--vision .panel__mark {
-    right: -4.5rem;
-  }
-
-  .panel--product .panel__mark {
-    right: -3rem;
-  }
 }
 
 @media (max-width: 980px) {
@@ -1443,10 +1567,11 @@
     font-size: var(--step-4);
   }
 
-  .panel--vision .panel__mark,
-  .panel--product .panel__mark,
-  .panel--tooling .panel__mark {
-    display: none;
+  /* One column leaves the figure no horizontal neighbour, so it drops back to
+     the text column's width and the whole panel is measured against the
+     viewport rather than a fixed box. */
+  .panel__mark {
+    margin-top: clamp(1rem, 2.4vh, 1.6rem);
   }
 
   .rail {
@@ -1511,8 +1636,11 @@
     grid-template-columns: auto 1fr;
   }
 
+  /* At this width the mark and the four nav items already meet in the middle,
+     so the header's identity links are dropped rather than allowed to overflow.
+     Nothing is lost: the contact section carries the same three links, plus npm. */
   .header__role,
-  .header__status {
+  .header__elsewhere {
     display: none;
   }
 

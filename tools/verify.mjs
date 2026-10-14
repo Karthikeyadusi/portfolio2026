@@ -1292,6 +1292,95 @@ const main = async () => {
         `${s.overflowTop}px over the top, ${s.overflowBottom}px over the bottom`);
     }
 
+    /* ------------------------------------------ project evidence figures -- */
+    // Each panel's mark plots numbers the panel already states in copy. The
+    // risks are mundane and easy to reintroduce: a figure growing past its
+    // panel, two labels landing on top of each other, or a panel that has come
+    // fully into view leaving its own figure half drawn.
+    console.log('\nProject figures');
+    // Each stop sits in the middle of that panel's fully-in plateau (see
+    // PANEL_WINDOWS), not merely somewhere the panel is visible: a figure is
+    // only finished when the panel it belongs to has finished arriving.
+    const STOPS = [['vision', 0.24], ['product', 0.585], ['tooling', 0.84]];
+    const figureSamples = [];
+    for (const [w, h] of [[1440, 900], [1024, 800], [768, 900], [390, 844], [360, 640]]) {
+      await page.setViewport(w, h, w < 700);
+      await page.goto(base);
+      await page.until('window.__aperture && window.__aperture.work');
+      await sleep(700);
+      const travel = await page.evaluate(
+        `return Math.max(document.getElementById('work').getBoundingClientRect().height - window.innerHeight, 1);`,
+      );
+      const top = await page.evaluate(
+        `return Math.round(document.getElementById('work').getBoundingClientRect().top + window.scrollY);`,
+      );
+      for (const [key, at] of STOPS) {
+        await page.scrollTo(top + Math.round(travel * at));
+        await sleep(700);
+        figureSamples.push(await page.evaluate(`
+          const panel = document.querySelector('.panel--${key}');
+          const mark = panel && panel.querySelector('.panel__mark');
+          const svg = mark && mark.querySelector('svg.viz');
+          const vw = ${w};
+          if (!svg) return { key: '${key}', vw, missing: true };
+          const stage = document.querySelector('.work__stage').getBoundingClientRect();
+          const box = svg.getBoundingClientRect();
+          const view = svg.getAttribute('viewBox').split(/\\s+/).map(Number);
+          // Label text is the part that has to stay readable, so it is the part
+          // that must never collide with another label or leave the frame.
+          const labels = [...svg.querySelectorAll('text')].map((el) => {
+            const b = el.getBBox();
+            return { text: el.textContent.trim().slice(0, 16), x: b.x, y: b.y, r: b.x + b.width, b: b.y + b.height };
+          });
+          const collisions = [];
+          for (let i = 0; i < labels.length; i++) {
+            for (let j = i + 1; j < labels.length; j++) {
+              const a = labels[i], c = labels[j];
+              const ox = Math.min(a.r, c.r) - Math.max(a.x, c.x);
+              const oy = Math.min(a.b, c.b) - Math.max(a.y, c.y);
+              if (ox > 1 && oy > 1) collisions.push(a.text + ' / ' + c.text);
+            }
+          }
+          const escaped = labels
+            .filter((l) => l.x < -1 || l.y < -1 || l.r > view[2] + 1 || l.b > view[3] + 1)
+            .map((l) => l.text);
+          return {
+            key: '${key}', vw, missing: false,
+            t: parseFloat(getComputedStyle(panel).getPropertyValue('--t')),
+            hidden: mark.getAttribute('aria-hidden'),
+            marks: panel.querySelectorAll('.panel__mark').length,
+            overflowTop: +Math.max(0, stage.top - box.top).toFixed(1),
+            overflowBottom: +Math.max(0, box.bottom - stage.bottom).toFixed(1),
+            labels: labels.length,
+            collisions, escaped,
+            dashLeft: +Math.max(0, ...[...svg.querySelectorAll('[class*="viz-draw"]')]
+              .map((el) => parseFloat(getComputedStyle(el).strokeDashoffset) || 0)).toFixed(2),
+            faded: +Math.max(0, ...[...svg.querySelectorAll('[class*="viz-fade"], [class*="viz-pop"]')]
+              .map((el) => 1 - (parseFloat(getComputedStyle(el).opacity) || 0))).toFixed(3),
+          };
+        `));
+      }
+    }
+    for (const s of figureSamples) {
+      const at = `${s.key} at ${s.vw}px`;
+      check(`figure exists for ${at}`, !s.missing, s.missing ? 'no svg.viz in the panel mark' : 'present');
+      if (s.missing) continue;
+      check(`figure is decorative to assistive tech at ${at}`, s.hidden === 'true' && s.marks === 1,
+        `aria-hidden=${s.hidden}, ${s.marks} mark(s)`);
+      check(`figure stays inside the stage at ${at}`,
+        s.overflowTop === 0 && s.overflowBottom === 0,
+        `${s.overflowTop}px over the top, ${s.overflowBottom}px over the bottom`);
+      check(`figure labels never collide at ${at}`, s.collisions.length === 0,
+        s.collisions.length ? s.collisions.join(', ') : `${s.labels} labels, all clear`);
+      check(`figure labels stay inside the frame at ${at}`, s.escaped.length === 0,
+        s.escaped.length ? s.escaped.join(', ') : `${s.labels} labels inside the viewBox`);
+      if (s.t >= 0.999) {
+        check(`figure is fully drawn when the panel is in at ${at}`,
+          s.dashLeft < 0.5 && s.faded < 0.02,
+          `--t ${s.t}: ${s.dashLeft}px of stroke left, ${s.faded} of opacity left`);
+      }
+    }
+
     /* ------------------------------------------------------ metadata ------ */
     console.log('\nIdentity metadata');
     const meta = await page.evaluate(`
@@ -1348,15 +1437,224 @@ const main = async () => {
         `HTTP ${iconResponse.status}, ${iconBody.length} bytes`);
     }
 
-    /* ------------------------------------------------ résumé download ---- */
+    /* ------------------------------------------------- header links ------ */
+    // Three links occupy the header cell the availability pill used to hold.
+    // Two failure modes are worth pinning here: a profile URL drifting apart
+    // between the header and the contact list it duplicates, and the paper
+    // theme leaving light marks sitting on light paper.
+    console.log('\nHeader links');
+    const EXPECTED_PROFILES = {
+      github: 'https://github.com/Karthikeyadusi',
+      linkedin: 'https://www.linkedin.com/in/karthikeyadusi/',
+    };
+    const headerSamples = [];
+    for (const [w, h] of [[1440, 900], [1024, 800], [768, 900], [390, 844], [360, 640]]) {
+      await page.setViewport(w, h, w < 700);
+      await page.goto(base);
+      await page.until('window.__aperture && window.__aperture.work');
+      await sleep(700);
+      headerSamples.push(await page.evaluate(`
+        const header = document.querySelector('[data-header]');
+        const nav = document.querySelector('.header__elsewhere');
+        const hb = header.getBoundingClientRect();
+        const cs = getComputedStyle(nav);
+        const hidden = cs.display === 'none';
+        const box = nav.getBoundingClientRect();
+        const links = Array.from(nav.querySelectorAll('a')).map((a) => {
+          const r = a.getBoundingClientRect();
+          return {
+            href: a.getAttribute('href'),
+            name: (a.textContent || '').trim() || a.getAttribute('aria-label') || '',
+            // The .sr-only label must be the name, not the pictogram: the
+            // drawing is aria-hidden, so this is the whole accessible name.
+            pictogramHidden: a.querySelector('svg')?.getAttribute('aria-hidden') === 'true',
+            target: +Math.max(r.width, r.height).toFixed(1),
+            opens: a.getAttribute('target'),
+            rel: a.getAttribute('rel') ?? '',
+            downloads: a.hasAttribute('download'),
+            external: /^https?:/.test(a.getAttribute('href') ?? ''),
+          };
+        });
+        const contactLinks = Array.from(document.querySelectorAll('.contact__links a'));
+        const contactHref = (needle) => {
+          const hit = contactLinks.find((a) => a.href.includes(needle));
+          return hit ? hit.getAttribute('href') : null;
+        };
+        return {
+          vw: window.innerWidth, hidden,
+          label: nav.getAttribute('aria-label'),
+          count: links.length, links,
+          contactGithub: contactHref('github.com'),
+          contactLinkedin: contactHref('linkedin.com'),
+          spillRight: hidden ? 0 : +Math.max(0, box.right - hb.right).toFixed(1),
+          docOverflow: +(document.documentElement.scrollWidth - window.innerWidth).toFixed(1),
+        };
+      `));
+    }
+    for (const s of headerSamples) {
+      check(`header carries all three identity links at ${s.vw}px`, s.count === 3,
+        `${s.count} link(s)`);
+      check(`header links are a labelled landmark at ${s.vw}px`, !!s.label, s.label ?? 'unlabelled');
+      const github = s.links.find((l) => /github\.com/.test(l.href ?? ''));
+      const linkedin = s.links.find((l) => /linkedin\.com/.test(l.href ?? ''));
+      check(`header GitHub matches the contact list at ${s.vw}px`,
+        !!github && github.href === EXPECTED_PROFILES.github && github.href === s.contactGithub,
+        `${github?.href ?? 'missing'} / contact ${s.contactGithub ?? 'missing'}`);
+      check(`header LinkedIn matches the contact list at ${s.vw}px`,
+        !!linkedin && linkedin.href === EXPECTED_PROFILES.linkedin && linkedin.href === s.contactLinkedin,
+        `${linkedin?.href ?? 'missing'} / contact ${s.contactLinkedin ?? 'missing'}`);
+      // A new tab is only safe with noopener: without it the opened page keeps
+      // a handle on this window and can navigate it to a lookalike. Neither
+      // half is visible in a screenshot, so it is asserted here.
+      const openerRisk = [github, linkedin].filter((l) => l && (
+        l.opens !== '_blank' || !/\bnoopener\b/.test(l.rel)
+      ));
+      check(`external header links open in a new tab with noopener at ${s.vw}px`,
+        openerRisk.length === 0,
+        openerRisk.length
+          ? openerRisk.map((l) => `${l.name}: target=${l.opens ?? 'self'} rel="${l.rel}"`).join(' | ')
+          : [github, linkedin].map((l) => `${l.name}: target=${l.opens} rel="${l.rel}"`).join(' | '));
+      // The résumé downloads instead of navigating, so a target beside it would
+      // be inert markup promising a tab that can never open.
+      const resume = s.links.find((l) => /\.pdf$/i.test(l.href ?? ''));
+      check(`résumé downloads in place rather than opening a tab at ${s.vw}px`,
+        !!resume && resume.downloads === true && !resume.opens,
+        resume ? `download=${resume.downloads} target=${resume.opens ?? 'self'}` : 'no pdf link');
+      const unnamed = s.links.filter((l) => !l.name);
+      check(`every header link has an accessible name at ${s.vw}px`, unnamed.length === 0,
+        unnamed.length ? `${unnamed.length} unnamed` : s.links.map((l) => l.name).join(', '));
+      const leaking = s.links.filter((l) => !l.pictogramHidden);
+      check(`header pictograms are hidden from assistive tech at ${s.vw}px`, leaking.length === 0,
+        `${s.links.length - leaking.length}/${s.links.length} drawings hidden`);
+      if (s.hidden) continue;
+      const small = s.links.filter((l) => l.target < 24);
+      check(`header link targets clear 24px at ${s.vw}px`, small.length === 0,
+        small.length ? small.map((l) => `${l.name} ${l.target}px`).join(', ')
+          : s.links.map((l) => `${l.name} ${l.target}px`).join(', '));
+      check(`header links stay inside the header at ${s.vw}px`, s.spillRight === 0 && s.docOverflow <= 0,
+        `${s.spillRight}px past the header, ${s.docOverflow}px page overflow`);
+    }
+
+    // Paper is the only place the header changes ground, so the marks have to
+    // change with it. Each state is measured where it actually occurs: ink at
+    // the top of the page, paper after contact has genuinely slid under the
+    // header. Measuring both in one place would compare the paper-theme colour
+    // against the ink ground and mean nothing.
+    await page.setViewport(1440, 900, false);
+    await page.goto(base);
+    await page.until('window.__aperture && window.__aperture.work');
+    await sleep(600);
+    const GROUND_PROBE = `
+      const lin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+      const lum = (rgb) => {
+        const m = rgb.match(/[\\d.]+/g).map(Number);
+        return 0.2126 * lin(m[0]) + 0.7152 * lin(m[1]) + 0.0722 * lin(m[2]);
+      };
+      const ratio = (fg, bg) => {
+        const a = lum(fg), b = lum(bg);
+        return +(((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toFixed(2));
+      };
+      const rgbOf = (hex) => {
+        const h = hex.replace('#', '');
+        return 'rgb(' + parseInt(h.slice(0, 2), 16) + ',' + parseInt(h.slice(2, 4), 16) + ',' + parseInt(h.slice(4, 6), 16) + ')';
+      };
+      const root = getComputedStyle(document.documentElement);
+      const link = document.querySelector('.header__link');
+      const color = getComputedStyle(link).color;
+      const ground = root.getPropertyValue('__GROUND__').trim();
+      return { theme: document.querySelector('[data-header]').dataset.theme, color, ratio: ratio(color, rgbOf(ground)) };
+    `;
+    const inkHeader = await page.evaluate(GROUND_PROBE.replace('__GROUND__', '--ink-900'));
+    await page.evaluate(`
+      const c = document.getElementById('contact');
+      window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY + 2, behavior: 'instant' });
+      return true;
+    `);
+    await sleep(700);
+    const paperHeader = await page.evaluate(GROUND_PROBE.replace('__GROUND__', '--paper'));
+    check('header starts on the ink theme', inkHeader.theme === 'ink', `data-theme=${inkHeader.theme}`);
+    check('header links clear WCAG AA on the ink ground', inkHeader.ratio >= 4.5,
+      `${inkHeader.color} → ${inkHeader.ratio}:1`);
+    check('header flips to the paper theme over contact', paperHeader.theme === 'paper',
+      `data-theme=${paperHeader.theme}`);
+    check('header links clear WCAG AA on the paper ground', paperHeader.ratio >= 4.5,
+      `${paperHeader.color} → ${paperHeader.ratio}:1`);
+    check('the header marks actually change ground colour', inkHeader.color !== paperHeader.color,
+      `${inkHeader.color} on ink → ${paperHeader.color} on paper`);
+
+    /* ------------------------------------------------ contact links ------ */
+    // The three marks beside the contact words. A malformed brand path renders
+    // as a solid blob and reads as decoration, so nothing about it looks broken
+    // in a screenshot — the geometry is asserted instead.
+    console.log('\nContact links');
+    const contactLinks = await page.evaluate(`
+      const out = [];
+      for (const a of document.querySelectorAll('.contact__links a')) {
+        const icon = a.querySelector('svg');
+        const r = icon ? icon.getBoundingClientRect() : null;
+        let fillRule = null;
+        let geometry = null;
+        if (icon) {
+          const path = icon.querySelector('path');
+          const b = path ? path.getBBox() : null;
+          if (b) {
+            geometry = {
+              w: +b.width.toFixed(2), h: +b.height.toFixed(2),
+              x: +b.x.toFixed(2), y: +b.y.toFixed(2),
+            };
+          }
+          const cs = getComputedStyle(path);
+          fillRule = { fill: cs.fill, rule: cs.fillRule };
+        }
+        out.push({
+          word: (a.querySelector('span')?.textContent || '').trim(),
+          iconHidden: icon ? icon.getAttribute('aria-hidden') === 'true' : false,
+          rendered: r ? { w: +r.width.toFixed(1), h: +r.height.toFixed(1) } : null,
+          geometry, fillRule,
+        });
+      }
+      return out;
+    `);
+    check('every contact link leads with a hidden pictogram',
+      contactLinks.length === 3 && contactLinks.every((l) => l.iconHidden),
+      contactLinks.map((l) => `${l.word || '?'}:${l.iconHidden ? 'hidden' : 'MISSING'}`).join(' · '));
+    check('every contact link keeps its word as the name',
+      contactLinks.every((l) => l.word.length > 0),
+      contactLinks.map((l) => l.word).join(', '));
+    // A path that collapses, escapes its viewBox, or fills as an undifferentiated
+    // block would all still photograph as "an icon is there".
+    const degenerate = contactLinks.filter((l) => !l.geometry ||
+      l.geometry.w < 8 || l.geometry.h < 8 ||
+      l.geometry.x < -0.5 || l.geometry.y < -0.5 ||
+      l.geometry.x + l.geometry.w > 24.5 || l.geometry.y + l.geometry.h > 24.5);
+    check('contact pictograms fill their viewBox without escaping it', degenerate.length === 0,
+      degenerate.length
+        ? degenerate.map((l) => `${l.word || '?'} ${JSON.stringify(l.geometry)}`).join(' · ')
+        : contactLinks.map((l) => `${l.word} ${l.geometry.w}x${l.geometry.h}`).join(' · '));
+    check('contact pictograms take the link colour rather than a baked one',
+      contactLinks.every((l) => /rgb/.test(l.fillRule?.fill ?? '')),
+      contactLinks.map((l) => `${l.word}: ${l.fillRule?.fill}`).join(' · '));
+
     console.log('\nRésumé download');
-    const resumeHref = await page.evaluate(
-      `const a = document.querySelector('.totop--link'); return a ? a.getAttribute('href') : null;`,
-    );
-    check('résumé link present with a relative href', !!resumeHref && !/^https?:/.test(resumeHref),
-      resumeHref ?? 'missing');
-    if (resumeHref) {
-      const url = new URL(resumeHref, base).href;
+    const resume = await page.evaluate(`
+      const foot = document.querySelector('.totop--link');
+      const head = document.querySelector('.header__link--resume');
+      return {
+        foot: foot ? foot.getAttribute('href') : null,
+        head: head ? head.getAttribute('href') : null,
+        headDownloads: head ? head.hasAttribute('download') : false,
+      };
+    `);
+    check('résumé link present with a relative href', !!resume.foot && !/^https?:/.test(resume.foot),
+      resume.foot ?? 'missing');
+    // Two copies of one document is fine; two documents would not be.
+    check('both résumé links point at the same file',
+      !!resume.head && resume.head === resume.foot && !/^https?:/.test(resume.head),
+      `${resume.head ?? 'missing'} vs ${resume.foot ?? 'missing'}`);
+    check('header résumé link downloads rather than navigates', resume.headDownloads === true,
+      resume.headDownloads ? 'download attribute present' : 'missing');
+    if (resume.foot) {
+      const url = new URL(resume.foot, base).href;
       const response = await fetch(url);
       const type = response.headers.get('content-type') ?? '';
       check('résumé PDF is actually served', response.ok && type.includes('pdf'),

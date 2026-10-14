@@ -14,6 +14,27 @@
 
 import { clamp, lerp, TAU } from '../core/math';
 
+/**
+ * Trace left by the shut shutter.
+ *
+ * At `t = 0` the twelve blades overlap past the centre and cover the frame
+ * completely. With the lit edges and corner brackets both fading to nothing at
+ * that point, a fully closed aperture is pixel-identical to a blank page — the
+ * geometry of the iris disappears at exactly the moment it is most complete.
+ *
+ * These constants give the shut state a floor so it still reads as a shutter,
+ * and `CLOSED_TRACE_FADE` keeps that floor a property of the closed state only:
+ * it is gone well before the aperture is meaningfully open, so it can never
+ * linger as stray geometry across the first project.
+ */
+const CLOSED_EDGE = 0.14;
+const CLOSED_BRACKET = 0.16;
+const CLOSED_TRACE_FADE = 0.12;
+
+/** 1 while the shutter is shut, falling to 0 as it opens. */
+const closedTrace = (t: number): number =>
+  t >= CLOSED_TRACE_FADE ? 0 : 1 - t / CLOSED_TRACE_FADE;
+
 export interface IrisOptions {
   /** Blade colour. */
   blade: string;
@@ -174,9 +195,11 @@ export class Iris {
       edge.setAttribute('y2', String(halfChord));
       edge.setAttribute('transform', tf);
       // Slightly uneven catches of light so the blades read as separate
-      // leaves rather than one flat mass.
+      // leaves rather than one flat mass. The shut-state floor keeps the
+      // aperture's geometry legible at the moment it is fully closed.
       const catch_ = 0.45 + 0.55 * (((i * 7) % 5) / 4);
-      edge.setAttribute('opacity', (clamp(t * 2.2) * 0.85 * catch_).toFixed(3));
+      const lit = Math.max(clamp(t * 2.2) * 0.85, closedTrace(t) * CLOSED_EDGE);
+      edge.setAttribute('opacity', (lit * catch_).toFixed(3));
     }
 
     this.updateBrackets(h, cx, cy, t);
@@ -186,8 +209,11 @@ export class Iris {
   private updateBrackets(h: number, cx: number, cy: number, t: number): void {
     const g = this.brackets;
     if (!g) return;
-    const visible = t > 0.02 && t < 0.985;
-    g.setAttribute('opacity', visible ? (Math.sin(t * Math.PI) * 0.55).toFixed(3) : '0');
+    // Shown whenever the iris is, so the closed state keeps its marks; the
+    // opacity function alone decides how strongly they read.
+    const visible = t < 0.985;
+    const opacity = Math.max(Math.sin(t * Math.PI) * 0.55, closedTrace(t) * CLOSED_BRACKET);
+    g.setAttribute('opacity', visible ? opacity.toFixed(3) : '0');
     if (!visible) return;
 
     // Sit the marks just outside the polygon's circumradius so they read as

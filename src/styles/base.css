@@ -207,28 +207,72 @@ em {
   color: var(--paper-dim);
 }
 
-.header__status {
+/*
+ * Identity links in the header's third cell, where the availability pill used
+ * to sit. The group is roughly the pill's width — a touch wider, since the
+ * marks and the résumé word were both enlarged to read as deliberate rather
+ * than as trailing furniture. The résumé carries a word because a bare
+ * download glyph reads as "save this page", not as a document to take away.
+ */
+.header__elsewhere {
   justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--fg-dim);
 }
 
-.header[data-theme='paper'] .header__status {
+.header__links {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.header__link {
+  /* An 18px glyph in a 26px box: the mark is 18, the padding supplies the rest,
+     so the target keeps clearing the 24px minimum instead of shrinking to the
+     glyph as the mark grows. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.25rem;
+  color: var(--fg-dim);
+  transition: color 0.35s var(--ease-out);
+}
+
+.header__link:hover {
+  color: var(--fg);
+}
+
+.header__link--resume {
+  gap: 0.45rem;
+  padding-right: 0;
+}
+
+.header__label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* Tight leading so the word does not inflate the link's box past the 26px
+     the glyphs alone already reach. */
+  line-height: 1;
+}
+
+.header__arrow {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The contact section is paper, so the header has to carry its links across to
+   the paper palette with it. Without this the marks sit light-on-light the
+   moment the paper reaches the header. */
+.header[data-theme='paper'] .header__link {
   color: var(--paper-dim);
 }
 
-.dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--aegis);
-  box-shadow: 0 0 0 3px rgba(95, 227, 207, 0.14);
+.header[data-theme='paper'] .header__link:hover {
+  color: var(--paper-ink);
 }
 
 .nav__list {

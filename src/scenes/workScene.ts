@@ -27,6 +27,16 @@ import type { DetailTier, MotionPolicy } from '../core/motion';
 /** Scroll position (0..1) where each project is fully composed. */
 export const PROJECT_STOPS = [0.24, 0.585, 0.86] as const;
 
+/**
+ * Scroll position at which the arriving form finishes materialising.
+ *
+ * The aperture reaches full closure while the stage is still at p = 0, so the
+ * entry has to be under way before then — and finished soon after, so the
+ * form is already legible at the moment the blades uncover it rather than
+ * fading in behind an open aperture.
+ */
+export const MATERIALISE_AT = 0.05;
+
 /** Fade windows per project. Adjacent windows overlap so the outgoing panel is
  *  still legible as the incoming one arrives — no dead beat between them. */
 const PANEL_WINDOWS = [
@@ -77,7 +87,17 @@ const [vision, product, tooling] = projects;
  */
 export const buildPoseStops = (): Array<Stop<Partial<CorePose>>> => [
   {
-    // Empty stage: nothing has formed yet.
+    /*
+     * Not an empty stage.
+     *
+     * The aperture seals over the last third of the intro, and it reaches full
+     * closure while this stage is still at p = 0 — so with the object absent
+     * the transition had nothing to reveal: a flat black frame behind a shut
+     * shutter. The opening pose now carries a faint wire lattice and a
+     * scattered point field at a third of full strength, so there is
+     * something already arriving when the blades come together, and the
+     * shutter reads as sealing over it.
+     */
     at: 0,
     value: {
       yaw: -34 * DEG,
@@ -87,25 +107,29 @@ export const buildPoseStops = (): Array<Stop<Partial<CorePose>>> => [
       y: 0.42,
       scale: 0.3,
       solidity: 0,
-      wire: 0,
-      relief: 0.02,
+      wire: 0.24,
+      relief: 0.06,
       flow: 0,
       dissolve: 1,
-      bloom: 0.1,
+      bloom: 0.12,
       ring: 0.05,
       debris: 2.4,
       grid: 0,
       scanY: -1.2,
       scan: 0,
-      opacity: 0,
+      opacity: 0.34,
       key: vision.accent,
       rim: { r: 63, g: 142, b: 168 },
       bg: { r: 4, g: 7, b: 9 },
     },
   },
   {
-    // Materialised, settling into the first pose.
-    at: 0.11,
+    /*
+     * Materialised, settling into the first pose. Reached early so the form
+     * gathers while the aperture is still opening rather than after the
+     * reveal has already finished.
+     */
+    at: MATERIALISE_AT,
     value: {
       yaw: 16 * DEG,
       pitch: -22 * DEG,

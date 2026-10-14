@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { samplePose, window01, type Stop } from '../src/core/timeline';
-import { buildPoseStops, POSE_KEYS, PROJECT_STOPS } from '../src/scenes/workScene';
+import { buildPoseStops, MATERIALISE_AT, POSE_KEYS, PROJECT_STOPS } from '../src/scenes/workScene';
 import type { CorePose } from '../src/scenes/coreRenderer';
 
 const stops = buildPoseStops();
@@ -127,15 +127,28 @@ describe('the pinned scene transforms with scroll', () => {
     expect(third.rim).not.toEqual(first.rim);
   });
 
-  it('enters from nothing and dissolves out in place, with no blank interval', () => {
-    expect(poseAt(0).opacity).toBeLessThan(0.02);
-    expect(poseAt(0.11).opacity).toBeGreaterThan(0.9);
+  it('arrives already underway, and dissolves out in place, with no blank interval', () => {
+    /*
+     * The aperture seals over the intro at p = 0, so the stage cannot be
+     * empty there or the transition has nothing to reveal. It must carry a
+     * faint lattice at low strength — present, but nowhere near composed.
+     */
+    expect(poseAt(0).opacity).toBeGreaterThan(0.25);
+    expect(poseAt(0).opacity).toBeLessThan(0.45);
+    expect(poseAt(0).wire).toBeGreaterThan(0.15);
+    expect(poseAt(0).solidity).toBeLessThan(0.05);
+
+    // Materialisation completes early, so the form is legible as the blades
+    // uncover it rather than fading in behind an already-open aperture.
+    expect(MATERIALISE_AT).toBeLessThan(PROJECT_STOPS[0]);
+    expect(poseAt(MATERIALISE_AT).opacity).toBeGreaterThan(0.9);
+    expect(poseAt(0.12).opacity).toBeGreaterThan(0.9);
 
     // Fully composed for the body of the sequence.
     for (let i = 13; i <= 88; i += 1) {
       expect(poseAt(i / 100).opacity, `p=${i / 100}`).toBeGreaterThan(0.9);
     }
-    // Monotone fade in.
+    // Monotone fade in — no flicker on the way up.
     let previous = 0;
     for (let i = 0; i <= 11; i++) {
       const v = poseAt(i / 100).opacity;

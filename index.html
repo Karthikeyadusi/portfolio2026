@@ -103,7 +103,77 @@
         </ul>
       </nav>
 
-      <span class="header__status"><i class="dot" aria-hidden="true"></i>Open to work</span>
+      <!--
+        Identity links. The two brand marks are the recognised glyphs rather
+        than hairline abstractions of them, because at this size a stroked
+        version of either mark stops reading as itself. Each carries a
+        screen-reader name in .sr-only and an aria-hidden drawing, so the name
+        is announced once and the pictogram never is.
+
+        The profile links open in a new tab, and `noopener` is the load-bearing
+        token: without it the opened page holds a reference to this window and
+        can navigate it to a lookalike. `noreferrer` withholds the Referer too.
+        `me` echoes the sameAs list in the structured data below.
+
+        The résumé carries `download` and deliberately no target: a download
+        never navigates, so a target beside it would be inert markup implying
+        a behaviour that cannot happen.
+      -->
+      <nav class="header__elsewhere" aria-label="Elsewhere">
+        <ul class="header__links">
+          <li>
+            <a
+              class="header__link"
+              href="https://github.com/Karthikeyadusi"
+              target="_blank"
+              rel="me noopener noreferrer"
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+                <path
+                  fill="currentColor"
+                  d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                />
+              </svg>
+              <span class="sr-only">GitHub</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="header__link"
+              href="https://www.linkedin.com/in/karthikeyadusi/"
+              target="_blank"
+              rel="me noopener noreferrer"
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+                <path
+                  fill="currentColor"
+                  d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                />
+              </svg>
+              <span class="sr-only">LinkedIn</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="header__link header__link--resume"
+              href="./Karthikeya-Dusi-Resume.pdf"
+              download
+            >
+              <span class="header__label">Résumé</span>
+              <svg
+                class="header__arrow"
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M12 5v14M6 13l6 6 6-6" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
       <span class="header__bar" data-page-bar aria-hidden="true"></span>
     </header>
 
@@ -232,13 +302,61 @@
                 <div><dt>Outcome</dt><dd>mAP50 0.217 → 0.561</dd></div>
               </dl>
               <p class="panel__mark" aria-hidden="true">
-                <svg viewBox="0 0 72 44" width="72" height="44">
-                  <path d="M2 12V2h10M60 2h10v10M70 32v10H60M12 42H2V32" class="mk-bracket" />
-                  <rect x="16" y="13" width="26" height="20" class="mk-box" />
-                  <path d="M16 27h26" class="mk-scan" />
-                  <path d="M46 30h14" class="mk-conf" />
-                  <path d="M46 30h8" class="mk-conf mk-conf--fill" />
-                  <path d="M2 22h6M64 22h6" class="mk-tick" />
+                <!--
+                  Evidence figure. Both numbers and their meaning are already
+                  carried by the summary above and the Outcome row in the meta
+                  list below, so the drawing is decorative to assistive tech and
+                  hidden rather than announced twice.
+
+                  Scale is mAP50 0 → 1 across the rule. The Dent figure is a
+                  per-class score, not a third point on the same series, so it
+                  is marked as a drop from its own point rather than joined to
+                  the run.
+                -->
+                <svg class="viz" viewBox="0 0 440 86" preserveAspectRatio="xMinYMid meet">
+                  <g class="viz-axis viz-step viz-fade viz-d0">
+                    <line x1="34" y1="58" x2="424" y2="58" />
+                    <line x1="34" y1="58" x2="34" y2="64" />
+                    <line x1="131.5" y1="58" x2="131.5" y2="62" />
+                    <line x1="229" y1="58" x2="229" y2="62" />
+                    <line x1="326.5" y1="58" x2="326.5" y2="62" />
+                    <line x1="424" y1="58" x2="424" y2="64" />
+                  </g>
+                  <g class="viz-step viz-fade viz-d0">
+                    <text class="viz-cap" x="34" y="11">mAP50 OVERALL</text>
+                    <text class="viz-cap" x="424" y="11" text-anchor="end">DENT 0.83</text>
+                  </g>
+                  <g class="viz-step viz-d4">
+                    <line
+                      class="viz-dent viz-draw"
+                      x1="357.7"
+                      y1="27"
+                      x2="357.7"
+                      y2="52"
+                      pathLength="100"
+                    />
+                    <path class="viz-dent viz-draw" d="M357.7 16 L362.7 21 L357.7 26 L352.7 21 Z" pathLength="100" />
+                  </g>
+                  <line
+                    class="viz-run viz-draw viz-step viz-d1"
+                    x1="118.6"
+                    y1="58"
+                    x2="252.8"
+                    y2="58"
+                    pathLength="100"
+                  />
+                  <g class="viz-step viz-d2">
+                    <circle class="viz-dot viz-dot--from viz-pop" cx="118.6" cy="58" r="4" />
+                    <circle class="viz-dot viz-dot--to viz-pop" cx="252.8" cy="58" r="4.5" />
+                  </g>
+                  <g class="viz-step viz-fade viz-d3">
+                    <text class="viz-val" x="118.6" y="80" text-anchor="middle">0.217</text>
+                    <text class="viz-val" x="252.8" y="80" text-anchor="middle">0.561</text>
+                  </g>
+                  <g class="viz-step viz-fade viz-d3">
+                    <text class="viz-tick" x="34" y="72">0</text>
+                    <text class="viz-tick" x="424" y="72" text-anchor="end">1</text>
+                  </g>
                 </svg>
               </p>
             </article>
@@ -270,16 +388,51 @@
                 <div><dt>Tests</dt><dd>Vitest</dd></div>
               </dl>
               <p class="panel__mark" aria-hidden="true">
-                <svg viewBox="0 0 72 44" width="72" height="44">
-                  <path d="M2 8h68M2 42h68" class="mk-rule" />
-                  <g class="mk-grid">
-                    <rect x="8" y="14" width="7" height="22" />
-                    <rect x="19" y="20" width="7" height="16" />
-                    <rect x="30" y="11" width="7" height="25" />
-                    <rect x="41" y="26" width="7" height="10" />
-                    <rect x="52" y="17" width="7" height="19" />
+                <!--
+                  Evidence figure: the two facts the project actually
+                  supports — twenty students, three semesters — shown
+                  separately. The cohort row is a headcount, not per-student
+                  data, and the semester row is a structural division, not a
+                  timeline of outcomes; nothing here implies a link between
+                  them or any attendance figure.
+                -->
+                <svg class="viz" viewBox="0 0 440 48" preserveAspectRatio="xMinYMid meet">
+                  <g class="viz-cohort viz-grow viz-step viz-d0">
+                    <rect x="3" y="2" width="10" height="10" />
+                    <rect x="24.6" y="2" width="10" height="10" />
+                    <rect x="46.2" y="2" width="10" height="10" />
+                    <rect x="67.8" y="2" width="10" height="10" />
+                    <rect x="89.4" y="2" width="10" height="10" />
+                    <rect x="111" y="2" width="10" height="10" />
+                    <rect x="132.6" y="2" width="10" height="10" />
+                    <rect x="154.2" y="2" width="10" height="10" />
+                    <rect x="175.8" y="2" width="10" height="10" />
+                    <rect x="197.4" y="2" width="10" height="10" />
+                    <rect x="219" y="2" width="10" height="10" />
+                    <rect x="240.6" y="2" width="10" height="10" />
+                    <rect x="262.2" y="2" width="10" height="10" />
+                    <rect x="283.8" y="2" width="10" height="10" />
+                    <rect x="305.4" y="2" width="10" height="10" />
+                    <rect x="327" y="2" width="10" height="10" />
+                    <rect x="348.6" y="2" width="10" height="10" />
+                    <rect x="370.2" y="2" width="10" height="10" />
+                    <rect x="391.8" y="2" width="10" height="10" />
+                    <rect x="413.4" y="2" width="10" height="10" />
                   </g>
-                  <path d="M8 32a30 30 0 0 1 51-9" class="mk-recovery" />
+                  <g class="viz-step viz-fade viz-d1">
+                    <text class="viz-cap" x="3" y="26">20 STUDENTS</text>
+                    <text class="viz-cap" x="437" y="26" text-anchor="end">3 SEMESTERS</text>
+                  </g>
+                  <g class="viz-step viz-d2">
+                    <line class="viz-rule viz-draw" x1="3" y1="32" x2="437" y2="32" pathLength="100" />
+                    <line class="viz-rule viz-draw" x1="147.7" y1="32" x2="147.7" y2="35.5" pathLength="100" />
+                    <line class="viz-rule viz-draw" x1="292.3" y1="32" x2="292.3" y2="35.5" pathLength="100" />
+                  </g>
+                  <g class="viz-step viz-fade viz-d3">
+                    <text class="viz-sem" x="3" y="45">SEM 1</text>
+                    <text class="viz-sem" x="147.7" y="45">SEM 2</text>
+                    <text class="viz-sem" x="292.3" y="45">SEM 3</text>
+                  </g>
                 </svg>
               </p>
             </article>
@@ -309,12 +462,28 @@
                 <div><dt>Runtime</dt><dd>Node.js</dd></div>
               </dl>
               <p class="panel__mark" aria-hidden="true">
-                <svg viewBox="0 0 72 44" width="72" height="44">
-                  <rect x="2" y="10" width="68" height="24" class="mk-window" />
-                  <path d="M2 18h68" class="mk-titlebar" />
-                  <path d="M9 27l4 3-4 3" class="mk-caret" />
-                  <path d="M18 30h16M18 24h8" class="mk-cmd" />
-                  <rect x="37" y="27" width="1.6" height="4" class="mk-block" />
+                <!--
+                  Evidence figure. The package name and the download count are
+                  both taken from the project content; the count is labelled as
+                  reported so it is never read as a live registry figure. The
+                  command is illustrative install syntax, not an executed one.
+                -->
+                <svg class="viz" viewBox="0 0 440 124" preserveAspectRatio="xMinYMid meet">
+                  <rect class="viz-window viz-step viz-fade viz-d0" x="0.5" y="0.5" width="439" height="123" />
+                  <line class="viz-rule viz-draw viz-step viz-d0" x1="0.5" y1="20" x2="439.5" y2="20" pathLength="100" />
+                  <g class="viz-dots viz-pop viz-step viz-d0">
+                    <circle cx="13" cy="10.5" r="2" />
+                    <circle cx="21" cy="10.5" r="2" />
+                    <circle cx="29" cy="10.5" r="2" />
+                  </g>
+                  <text class="viz-cap viz-step viz-fade viz-d0" x="42" y="14">gitrunbykaru</text>
+                  <g class="viz-step viz-d1">
+                    <text class="viz-cmd viz-fade" x="16" y="48">$ npm i -g gitrunbykaru</text>
+                    <rect class="viz-cursor viz-fade" x="196" y="37" width="7" height="14" />
+                  </g>
+                  <line class="viz-rule viz-draw viz-step viz-d2" x1="16" y1="68" x2="424" y2="68" pathLength="100" />
+                  <text class="viz-cap viz-step viz-fade viz-d3" x="16" y="84">REPORTED DOWNLOADS</text>
+                  <text class="viz-figure viz-step viz-fade viz-d4" x="16" y="116">1,500+</text>
                 </svg>
               </p>
             </article>
@@ -468,10 +637,52 @@
               </svg>
             </a>
 
+            <!--
+              Same three marks as the header, one size down: the page should
+              not present two different logos for the same three destinations.
+              They are filled brand geometry rather than hairline abstractions,
+              because at this size a stroked version stops reading as itself.
+              Paths are Simple Icons' 24x24 marks, pasted verbatim rather than
+              redrawn, so the letters and the octocat survive being scaled.
+
+              Each drawing is aria-hidden and the word beside it is the whole
+              accessible name, so the pictogram is never announced. These links
+              stay in the same tab, unlike the header's.
+            -->
             <ul class="contact__links">
-              <li><a href="https://github.com/Karthikeyadusi">GitHub</a></li>
-              <li><a href="https://www.linkedin.com/in/karthikeyadusi/">LinkedIn</a></li>
-              <li><a href="https://www.npmjs.com/package/gitrunbykaru">npm</a></li>
+              <li>
+                <a href="https://github.com/Karthikeyadusi">
+                  <svg class="contact__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path
+                      fill="currentColor"
+                      d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                    />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/in/karthikeyadusi/">
+                  <svg class="contact__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path
+                      fill="currentColor"
+                      d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                    />
+                  </svg>
+                  <span>LinkedIn</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.npmjs.com/package/gitrunbykaru">
+                  <svg class="contact__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path
+                      fill="currentColor"
+                      d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"
+                    />
+                  </svg>
+                  <span>npm</span>
+                </a>
+              </li>
             </ul>
 
             <div class="contact__foot">
