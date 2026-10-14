@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-60 -60 120 120" width="120" height="120">
+  <!--
+    The hexagonal mark already used on the contact panel, inverted for a dark
+    browser chrome. Drawn inline in the project's existing stroke language:
+    hairline hexagon, one ring, one solid pip.
+  -->
+  <rect x="-60" y="-60" width="120" height="120" fill="#07090c" />
+  <g fill="none" stroke="#e8e3d8" stroke-width="3">
+    <path d="M0 -52 L45 -26 L45 26 L0 52 L-45 26 L-45 -26 Z" />
+    <circle r="26" opacity=".45" />
+  </g>
+  <circle r="7" fill="#f3a854" />
+</svg>

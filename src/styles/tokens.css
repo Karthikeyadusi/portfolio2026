@@ -1,0 +1,76 @@
+/* =========================================================================
+   Aperture — design tokens
+   One palette, three project accents, one paper coda.
+   ========================================================================= */
+
+:root {
+  /* Ground */
+  --ink-950: #05070a;
+  --ink-900: #07090c;
+  --ink-850: #0a0d12;
+  --ink-800: #0e1219;
+  --ink-700: #161b24;
+  --ink-600: #1f2630;
+
+  /* Ink */
+  --fg: #e7ecf3;
+  --fg-dim: #9ba6b6;
+  --fg-faint: #66707f;
+  --fg-ghost: #3d4552;
+  /*
+   * Content-bearing labels only. --fg-ghost is deliberately too faint to read
+   * (2.96:1 on --ink-900) and stays in use for decorative texture — dial
+   * ticks, the marquee, nav numerals. --fg-label clears WCAG AA (4.72:1) while
+   * still sitting below --fg-faint, so the existing hierarchy is preserved.
+   */
+  --fg-label: #737d8b;
+
+  /* Hairlines */
+  --line: rgba(231, 236, 243, 0.11);
+  --line-soft: rgba(231, 236, 243, 0.06);
+  --line-strong: rgba(231, 236, 243, 0.24);
+
+  /* Identity accent — constant across the dark sections */
+  --amber: #f3a854;
+  --amber-dim: rgba(243, 168, 84, 0.5);
+
+  /* Project accents (mirrored inline on each panel) */
+  --aegis: #5fe3cf;
+  --orbital: #a892ff;
+  --echo: #ff8b4c;
+
+  /* Paper coda */
+  --paper: #e8e3d8;
+  --paper-2: #ded8cb;
+  --paper-ink: #15171b;
+  --paper-dim: #565049;
+  --paper-line: rgba(21, 23, 27, 0.18);
+
+  /* Type */
+  --font-display: 'Instrument Serif', 'Times New Roman', Times, Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  --step--1: clamp(0.72rem, 0.68rem + 0.16vw, 0.8rem);
+  --step-0: clamp(0.95rem, 0.9rem + 0.22vw, 1.06rem);
+  --step-1: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+  --step-2: clamp(1.5rem, 1.25rem + 1.2vw, 2.1rem);
+  --step-3: clamp(2.1rem, 1.5rem + 2.8vw, 3.6rem);
+  --step-4: clamp(3rem, 1.7rem + 6vw, 6.6rem);
+  --step-5: clamp(4rem, 1.2rem + 13vw, 13rem);
+
+  /* Rhythm */
+  --gutter: clamp(1.25rem, 5vw, 5.5rem);
+  --measure: 68ch;
+  --header-h: 58px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --header-h: 52px;
+  }
+}

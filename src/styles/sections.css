@@ -1,0 +1,1593 @@
+/* =========================================================================
+   Sections
+   01 Intro · 02 Work · 03 About · 04 Contact
+   ========================================================================= */
+
+/* ======================================================== 01 — INTRO ==== */
+
+.intro {
+  position: relative;
+  height: 150vh;
+}
+
+.intro__card {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    'kicker dial'
+    'title  dial'
+    'lede   meta';
+  column-gap: clamp(1.5rem, 5vw, 5rem);
+  padding: calc(var(--header-h) + 4vh) var(--gutter) clamp(6rem, 11vh, 8.5rem);
+}
+
+.intro__grid {
+  position: absolute;
+  inset: -12%;
+  background-image:
+    linear-gradient(to right, var(--line-soft) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line-soft) 1px, transparent 1px);
+  background-size: clamp(70px, 8vw, 104px) clamp(70px, 8vw, 104px);
+  -webkit-mask-image: radial-gradient(ellipse 68% 62% at 42% 46%, #000 0%, transparent 76%);
+  mask-image: radial-gradient(ellipse 68% 62% at 42% 46%, #000 0%, transparent 76%);
+}
+
+.intro .kicker {
+  grid-area: kicker;
+  align-self: start;
+}
+
+/*
+ * Hero name — a two-tier masthead on one shared left edge.
+ *
+ * Tier 1 is the display serif at full scale. Tier 2 is the surname set as a
+ * small wide-tracked mono label, which rhymes with the kicker and the meta
+ * lines rather than reading as a continuation of line one. Two distinct tiers
+ * is what stops a 10:4 character ratio from looking like an accidental wrap.
+ *
+ * Both tiers share `margin-left` (set on the h1) so the K and the D resolve to
+ * the same optical edge.
+ */
+.intro__title {
+  grid-area: title;
+  align-self: center;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 7.8vw, 8.2rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  margin-left: -0.04em;
+}
+
+.intro__name__line {
+  display: block;
+}
+
+.intro__name__line--display {
+  /* Instrument Serif's caps already clear the line box at this leading, but
+     that headroom is font-specific. A little padding keeps the mask safe if
+     the display face fails to load and a fallback with taller metrics is
+     substituted; the matching negative margin hands the height straight back,
+     so the composition does not shift either way. */
+  overflow: hidden;
+  padding-top: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/*
+ * Hero entrance gate.
+ *
+ * Both tiers animate, but the display face arrives with a stylesheet that is
+ * swapped in asynchronously. Until `data-display-font="ready"` is set on the
+ * root they render in their natural, fully visible state with no animation —
+ * so the name is never seen composing in a fallback serif and re-rendering,
+ * and a face that fails to load costs the entrance rather than the name.
+ * `main.ts` sets the attribute from `waitForDisplayFont`, which gives up after
+ * a deadline and leaves this state in place.
+ */
+:root:not([data-display-font='ready']) .intro__name__line--display .intro__name__inner,
+:root:not([data-display-font='ready']) .intro__name__line--mono .ch {
+  animation: none;
+}
+
+.intro__name__line--display .intro__name__inner {
+  display: block;
+  animation: nameRise 880ms var(--ease-out) both;
+}
+
+.intro__name__line--mono {
+  /* Sits against the display line's negative margin, so this value is the
+     *net* separation once the two are combined. The empty space below an
+     all-caps baseline does the rest of the work. */
+  margin-top: clamp(1.6rem, 3.8vh, 2.8rem);
+  font-family: var(--font-mono);
+  /* Sized to read as the second half of a name rather than as a caption:
+     ~0.19 the measure of the display tier, which the harness enforces. */
+  font-size: clamp(1.1rem, 1.48vw, 1.42rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.55em;
+  color: var(--fg-dim);
+  /* Tracking is drawn *after* each glyph, so the trailing one would push the
+     block's measured width past its ink. Trim it back to the optical edge. */
+  margin-right: -0.55em;
+}
+
+.intro__name__line--mono .intro__name__inner {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+.intro__name__line--mono .ch {
+  display: inline-block;
+  animation: chIn 400ms var(--ease-out) both;
+}
+
+.intro__name__line--mono .ch:nth-child(1) {
+  animation-delay: 520ms;
+}
+.intro__name__line--mono .ch:nth-child(2) {
+  animation-delay: 565ms;
+}
+.intro__name__line--mono .ch:nth-child(3) {
+  animation-delay: 610ms;
+}
+.intro__name__line--mono .ch:nth-child(4) {
+  animation-delay: 655ms;
+}
+
+/*
+ * The display line rises out of its mask. Opacity reaches full early so the
+ * word reads as emerging from the mask rather than fading up.
+ */
+@keyframes nameRise {
+  0% {
+    transform: translateY(0.85em);
+    opacity: 0;
+  }
+  38% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Mono has no kerning to lose at this tracking, so a per-character entrance
+   is typographically honest here — the instrument indexing its own label. */
+@keyframes chIn {
+  from {
+    transform: translateY(0.55em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.intro__lede {
+  grid-area: lede;
+  align-self: end;
+  max-width: 52ch;
+  font-size: var(--step-1);
+  line-height: 1.55;
+  color: var(--fg-dim);
+  animation: fadeUp 1.1s var(--ease-out) 0.26s both;
+}
+
+.intro__lede em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.16em;
+  color: var(--amber);
+}
+
+.intro__aside {
+  grid-area: meta;
+  align-self: end;
+  display: grid;
+  gap: 0.85rem;
+  padding-bottom: 0.4rem;
+  animation: fadeUp 1.1s var(--ease-out) 0.38s both;
+}
+
+.meta-line {
+  display: grid;
+  grid-template-columns: 4.8rem minmax(0, 1fr);
+  gap: 0.9rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--line-soft);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
+}
+
+.meta-line__k {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--fg-label);
+}
+
+.meta-line__v {
+  color: var(--fg-dim);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Identity device ------------------------------------------------------- */
+
+.dial {
+  grid-area: dial;
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  width: min(40vh, 30vw, 360px);
+  aspect-ratio: 1;
+}
+
+.dial svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.dial__ring {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 0.5;
+}
+
+.dial__tick {
+  stroke: var(--fg-ghost);
+  stroke-width: 1;
+}
+
+.dial__tick--major {
+  stroke: var(--fg-dim);
+  stroke-width: 1.5;
+}
+
+.dial__poly path {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 1.1;
+  opacity: 0.7;
+}
+
+.dial__dot {
+  fill: var(--amber);
+}
+
+.dial__index {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 1.8;
+}
+
+.dial__readout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--step-2);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  pointer-events: none;
+}
+
+.dial__caption {
+  position: absolute;
+  left: 50%;
+  bottom: -1.9rem;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--fg-label);
+}
+
+/* Scroll cue + ticker --------------------------------------------------- */
+
+.scrollcue {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 4.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+.scrollcue__track {
+  position: relative;
+  width: clamp(48px, 7vw, 86px);
+  height: 1px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.scrollcue__track i {
+  position: absolute;
+  inset: 0;
+  background: var(--amber);
+  animation: cueSweep 2.6s var(--ease-in-out) infinite;
+}
+
+@keyframes cueSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  58% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.ticker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  border-top: 1px solid var(--line-soft);
+  padding: 0.55rem 0;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.ticker__row {
+  display: flex;
+  width: max-content;
+  animation: tickerRun 44s linear infinite;
+}
+
+.ticker__row span {
+  padding-right: 2.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-ghost);
+  white-space: nowrap;
+}
+
+@keyframes tickerRun {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ========================================================= 02 — WORK ==== */
+
+.work {
+  position: relative;
+  height: 460vh;
+}
+
+.work__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  --stage-accent: var(--amber);
+  --stage-edge: var(--line-strong);
+  --stage-bg: #07090c;
+  --scrim-near: rgba(7, 9, 12, 0.86);
+  --scrim-edge: rgba(7, 9, 12, 0.34);
+  --scrim-far: rgba(7, 9, 12, 0);
+  --stage-out: 1;
+}
+
+.work__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Legibility scrim. The object is free to cross the copy — at the Orbital
+ * lattice state it fills the frame — so the left third is washed back toward
+ * the stage colour. It is a gradient, not a panel: no edge, no container.
+ */
+.work__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    98deg,
+    var(--scrim-near) 0%,
+    var(--scrim-edge) 26%,
+    var(--scrim-far) 52%
+  );
+}
+
+.work__frame,
+.work__eyebrow,
+.work__panels,
+.work__hud,
+.rail {
+  opacity: var(--stage-out);
+}
+
+.work__frame {
+  position: absolute;
+  inset: clamp(12px, 2.2vw, 28px);
+  pointer-events: none;
+}
+
+.work__corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 0 solid var(--stage-edge);
+  transition: border-color 0.3s linear;
+}
+
+.work__corner--tl {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+.work__corner--tr {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+.work__corner--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+.work__corner--br {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+.work__eyebrow {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(var(--header-h) + clamp(1.2rem, 3vh, 2.2rem));
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+.work__eyebrow i {
+  font-style: normal;
+  color: var(--stage-accent);
+}
+
+/* Panels ---------------------------------------------------------------- */
+
+.work__panels {
+  position: absolute;
+  z-index: 2;
+  left: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  /* An explicit box so the absolutely-positioned panels inside can share a
+     height and actually centre, instead of collapsing to zero and flowing
+     down from the midpoint. Tall enough that the Attendly panel's tick rule
+     can sit below the descender without crowding the discipline line. */
+  width: min(42ch, 42vw);
+  height: min(740px, 92vh);
+  pointer-events: none;
+}
+
+.panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  visibility: hidden;
+  --t: 0;
+  will-change: transform, opacity;
+}
+
+.panel[data-active='true'] {
+  pointer-events: auto;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  left: -1.15rem;
+  top: 0.25rem;
+  width: 2px;
+  height: calc(1.5rem + var(--t) * 7.5rem);
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+
+.panel__index,
+.panel__title,
+.panel__discipline,
+.panel__summary,
+.panel__body,
+.panel__meta,
+.panel__mark {
+  opacity: calc(0.1 + 0.9 * var(--t));
+}
+
+.panel__index {
+  transform: translate3d(0, calc((1 - var(--t)) * 10px), 0);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-label);
+}
+
+.panel__index i {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.panel__title {
+  transform: translate3d(0, calc((1 - var(--t)) * 24px), 0);
+  margin: 0.55rem 0 0;
+  color: var(--fg);
+}
+
+.panel__discipline {
+  transform: translate3d(0, calc((1 - var(--t)) * 30px), 0);
+  margin-top: 0.7rem;
+}
+
+.panel__summary {
+  transform: translate3d(0, calc((1 - var(--t)) * 36px), 0);
+  margin-top: 1.5rem;
+  max-width: 34ch;
+  font-size: var(--step-1);
+  line-height: 1.42;
+  color: var(--fg);
+  font-weight: 300;
+}
+
+.panel__body {
+  transform: translate3d(0, calc((1 - var(--t)) * 42px), 0);
+  margin-top: 1.1rem;
+  max-width: 42ch;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--fg-dim);
+}
+
+.panel__meta {
+  transform: translate3d(0, calc((1 - var(--t)) * 48px), 0);
+  margin-top: 2rem;
+}
+
+.panel__meta dt {
+  color: var(--fg-label);
+}
+
+.panel__meta dd {
+  margin: 0;
+  color: var(--fg-dim);
+}
+
+/* Signature stamps sit in the flow after the meta block so they stay attached
+   to the copy however the panel's height is resolved. Each project aligns its
+   stamp differently. */
+.panel__mark {
+  transform: translate3d(0, calc((1 - var(--t)) * 20px), 0);
+  margin-top: clamp(1.4rem, 3vh, 2.2rem);
+  color: var(--accent);
+}
+
+.panel__mark svg {
+  overflow: visible;
+}
+
+.panel__mark path,
+.panel__mark ellipse,
+.panel__mark circle {
+  vector-effect: non-scaling-stroke;
+}
+
+/* AegisLogix — clinical, wide-tracked, hairline meta table, detection mark -- */
+
+.panel--vision .panel__title {
+  font-family: var(--font-sans);
+  font-weight: 200;
+  font-size: var(--step-3);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.panel--vision .panel__discipline {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.panel--vision .panel__meta {
+  display: grid;
+}
+
+.panel--vision .panel__meta > div {
+  display: grid;
+  grid-template-columns: 4.4rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.panel--vision .panel__meta dt,
+.panel--product .panel__meta dt,
+.panel--tooling .panel__meta dt {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.panel--vision .panel__meta dd {
+  font-size: 0.8rem;
+}
+
+.panel--vision .panel__mark {
+  align-self: flex-end;
+}
+
+.panel--vision .mk-bracket {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.panel--vision .mk-box {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+
+.panel--vision .mk-scan {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+  opacity: 0.85;
+}
+
+.panel--vision .mk-conf {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.4;
+}
+
+.panel--vision .mk-conf--fill {
+  opacity: 0.9;
+}
+
+.panel--vision .mk-tick {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.45;
+}
+
+/* Attendly — display serif with a semester-progress rule, columnar meta ----- */
+
+.panel--product .panel__title {
+  font-family: var(--font-display);
+  /* Display scale, but held back so the cap-height clears the section
+     eyebrow rather than colliding with it. */
+  font-size: clamp(3.8rem, 9.4vw, 9.4rem);
+  line-height: 0.86;
+  letter-spacing: -0.03em;
+  /* Room for the tick rule below. Line-height 0.86 puts the box bottom only
+     ~0.09em under the baseline, so at this scale the rule — once lowered past
+     the "y" descender — would otherwise run into the discipline line beneath.
+     Expressed in em so the clearance tracks the type at every width instead
+     of fighting a fixed rem gap. */
+  padding-bottom: 0.25em;
+}
+
+.panel--product .panel__title span {
+  position: relative;
+  display: inline-block;
+}
+
+.panel--product .panel__title span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  /*
+   * Sits below the "y" rather than through it. The descender of this face
+   * reaches ~0.13em under the line box, so anchoring to the box bottom put
+   * the rule straight through it; -0.21em clears it by ~0.03em and lands the
+   * rule between 0.21em and 0.16em beneath the box.
+   */
+  bottom: -0.21em;
+  height: 0.05em;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--accent) 0 2px,
+    transparent 2px 7px
+  );
+  opacity: calc(0.25 + 0.75 * var(--t));
+}
+
+.panel--product .panel__discipline {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  /* Spacing above this line is owned by the title's padding-bottom, which has
+     to scale with the display tier to make room for the lowered rule. */
+  margin-top: 0;
+}
+
+.panel--product .panel__summary {
+  font-family: var(--font-display);
+  font-size: calc(var(--step-2) * 0.92);
+  line-height: 1.22;
+  max-width: 26ch;
+}
+
+.panel--product .panel__meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.panel--product .panel__meta > div {
+  border-left: 1px solid var(--line-soft);
+  padding-left: 0.85rem;
+}
+
+.panel--product .panel__meta dd {
+  margin-top: 0.35rem;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  line-height: 1.1;
+  color: var(--fg);
+}
+
+.panel--product .panel__mark {
+  align-self: flex-start;
+}
+
+.panel--product .mk-rule {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.3;
+}
+
+.panel--product .mk-grid rect {
+  fill: var(--accent);
+  opacity: 0.22;
+}
+
+.panel--product .mk-grid rect:nth-child(3) {
+  opacity: 0.75;
+}
+
+.panel--product .mk-recovery {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+/* GitRunByKaru — italic display, inline meta, terminal mark ---------------- */
+
+.panel--tooling .panel__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: calc(var(--step-4) * 0.9);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.panel--tooling .panel__discipline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-1);
+  color: var(--accent);
+}
+
+.panel--tooling .panel__summary {
+  font-family: var(--font-display);
+  font-size: calc(var(--step-1) * 1.16);
+  line-height: 1.32;
+  max-width: 30ch;
+}
+
+.panel--tooling .panel__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+}
+
+.panel--tooling .panel__meta > div {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.panel--tooling .panel__meta dd {
+  color: var(--fg-dim);
+}
+
+.panel--tooling .panel__meta dt::after {
+  content: '/';
+  margin-left: 0.45rem;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+.panel--tooling .panel__mark {
+  align-self: flex-end;
+}
+
+.panel--tooling .mk-window {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.55;
+}
+
+.panel--tooling .mk-titlebar {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.55;
+}
+
+.panel--tooling .mk-caret,
+.panel--tooling .mk-cmd {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.panel--tooling .mk-cmd {
+  opacity: 0.75;
+}
+
+.panel--tooling .mk-block {
+  fill: var(--accent);
+}
+
+/* HUD + rail ------------------------------------------------------------ */
+
+.work__hud {
+  position: absolute;
+  left: var(--gutter);
+  bottom: clamp(1.4rem, 3.4vh, 2.4rem);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: var(--fg-ghost);
+}
+
+.hud__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.hud__item i {
+  font-style: normal;
+  font-size: 0.54rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-label);
+}
+
+.hud__item b {
+  font-weight: 400;
+  color: var(--stage-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.rail {
+  position: absolute;
+  right: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  gap: 1.1rem;
+  justify-items: end;
+}
+
+.rail__tick {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+.rail__tick i {
+  font-style: normal;
+  font-size: 0.56rem;
+}
+
+.rail__tick span {
+  opacity: calc(0.18 + 0.82 * var(--near, 0));
+  transform: translate3d(calc((1 - var(--near, 0)) * 8px), 0, 0);
+}
+
+.rail__tick em {
+  display: block;
+  width: calc(8px + 36px * var(--near, 0));
+  height: 1px;
+  background: currentColor;
+  order: -1;
+}
+
+.rail__tick[data-active='true'] {
+  color: var(--stage-accent);
+}
+
+/* ======================================================== 03 — ABOUT ==== */
+
+.about {
+  position: relative;
+  padding: clamp(5rem, 13vh, 11rem) 0 clamp(5rem, 11vh, 9rem);
+  isolation: isolate;
+}
+
+.about::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 55% 46% at 18% 26%,
+    rgba(243, 168, 84, 0.08),
+    transparent 68%
+  );
+}
+
+.about__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 7rem);
+  padding: 0 var(--gutter);
+}
+
+.about__sticky {
+  position: sticky;
+  top: calc(var(--header-h) + 3vh);
+  padding: clamp(1rem, 3vh, 2.5rem) 0;
+  isolation: isolate;
+}
+
+.about__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+}
+
+.about__title {
+  margin-top: 1.5rem;
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+
+.about__title em {
+  color: var(--amber);
+}
+
+.about__note {
+  margin-top: 1.6rem;
+  max-width: 34ch;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line-soft);
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--fg-dim);
+}
+
+/* Recognition — two lines, same weight as the note above it */
+.recognition {
+  margin-top: 1.6rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+.recognition__label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-ghost);
+}
+
+.recognition__list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+}
+
+.recognition__list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.recognition__list b {
+  font-weight: 400;
+  color: var(--fg);
+}
+
+.recognition__list span {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+}
+
+.about__lede {
+  max-width: 52ch;
+  font-size: var(--step-1);
+  line-height: 1.55;
+  color: var(--fg-dim);
+}
+
+.about__lede::first-line {
+  color: var(--fg);
+}
+
+.capabilities {
+  display: grid;
+  gap: clamp(2rem, 5vh, 3.4rem);
+  margin-top: clamp(2.6rem, 7vh, 5rem);
+}
+
+.capability {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.8rem minmax(0, 1fr) auto;
+  gap: 0 clamp(1rem, 2.4vw, 2.4rem);
+  padding-top: 1.35rem;
+  align-items: start;
+  --t: 0;
+}
+
+.capability__rule {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(to right, var(--amber) 0%, var(--line) 62%, transparent);
+  transform: scaleX(var(--t));
+  transform-origin: 0 50%;
+}
+
+/* Explicit placement: with auto-placement the body text falls into the narrow
+   index column and wraps one word per line. */
+.capability__idx {
+  grid-column: 1;
+  grid-row: 1;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--amber);
+  padding-top: 0.4rem;
+}
+
+.capability__title {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+}
+
+.capability__text {
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 0.75rem;
+  max-width: 46ch;
+  font-size: 0.9rem;
+  line-height: 1.68;
+  color: var(--fg-dim);
+}
+
+.capability .chips {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  align-content: flex-start;
+  justify-content: flex-end;
+  max-width: 26ch;
+  padding-top: 0.5rem;
+}
+
+/* ====================================================== 04 — CONTACT ==== */
+
+.contact {
+  position: relative;
+  height: 170vh;
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+
+.contact__panel {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  padding: calc(var(--header-h) + 5vh) var(--gutter) clamp(5rem, 12vh, 9rem);
+  --t: 0;
+}
+
+.contact__inner {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.kicker--ink {
+  color: var(--paper-dim);
+}
+
+.kicker--ink .kicker__rule {
+  background: #b4671f;
+}
+
+.contact__title {
+  margin-top: 1.5rem;
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  font-weight: 400;
+  line-height: 0.96;
+  letter-spacing: -0.022em;
+}
+
+.contact__title em {
+  color: #b4671f;
+}
+
+.contact__lede {
+  margin-top: 1.5rem;
+  max-width: 46ch;
+  font-size: var(--step-1);
+  color: var(--paper-dim);
+}
+
+.contact__mail {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: clamp(2rem, 5vh, 3.2rem);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 4vw, 2.9rem);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.contact__mail::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 2.6rem;
+  bottom: -0.1em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(calc(0.3 + 0.7 * var(--t)));
+  transform-origin: 0 50%;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.contact__mail svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.contact__mail:hover svg {
+  transform: translate(3px, -3px);
+}
+
+.contact__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem 2rem;
+  margin-top: clamp(2rem, 5vh, 3rem);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.contact__links a {
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--paper-line);
+  transition: border-color 0.35s var(--ease-out);
+}
+
+.contact__links a:hover {
+  border-color: var(--paper-ink);
+}
+
+.contact__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  margin-top: clamp(2.6rem, 8vh, 5rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--paper-line);
+}
+
+.contact__mark {
+  flex: none;
+  width: clamp(52px, 7vw, 74px);
+  height: clamp(52px, 7vw, 74px);
+  color: var(--paper-ink);
+  transform: rotate(var(--spin, 0deg));
+}
+
+.contact__colophon {
+  max-width: 36ch;
+  font-size: 0.76rem;
+  line-height: 1.65;
+  color: var(--paper-dim);
+}
+
+.contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  flex: none;
+}
+
+.totop--link {
+  text-decoration: none;
+}
+
+.totop {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem 1.05rem;
+  border: 1px solid var(--paper-line);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+}
+
+.totop:hover {
+  background: var(--paper-ink);
+  color: var(--paper);
+}
+
+.totop svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+}
+
+.contact__horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(1.6rem, 5vh, 3.4rem);
+  height: 1px;
+  background: rgba(21, 23, 27, 0.3);
+  transform: scaleX(var(--draw, 0));
+  transform-origin: 0 50%;
+}
+
+/* ========================================================= RESPONSIVE ==== */
+
+@media (max-width: 1180px) {
+  .work__panels {
+    width: min(40ch, 46vw);
+  }
+
+  .panel--vision .panel__mark {
+    right: -4.5rem;
+  }
+
+  .panel--product .panel__mark {
+    right: -3rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .intro__card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      'kicker'
+      'title'
+      'dial'
+      'lede';
+    row-gap: clamp(1.4rem, 3vh, 2.4rem);
+  }
+
+  .intro__aside {
+    display: none;
+  }
+
+  .dial {
+    justify-self: start;
+    width: min(30vh, 44vw, 220px);
+    margin-left: 0.5rem;
+  }
+
+  .intro__lede {
+    max-width: 40ch;
+  }
+
+  .work {
+    height: 430vh;
+  }
+
+  .work__panels {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: clamp(3.6rem, 9vh, 5.5rem);
+    transform: none;
+    width: auto;
+    height: auto;
+  }
+
+  /* Absolutely-positioned children ignore the container's padding, so the
+     gutter moves onto the panels themselves. */
+  .panel {
+    inset: auto 0 0;
+    justify-content: flex-end;
+    padding: 0 var(--gutter);
+  }
+
+  /* On one column there is no object beside the copy to wash back, so the
+     scrim becomes a plain vertical lift from the bottom edge. */
+  .work__scrim {
+    background: linear-gradient(
+      to top,
+      var(--scrim-near) 0%,
+      var(--scrim-edge) 30%,
+      var(--scrim-far) 56%
+    );
+  }
+
+  .panel__body {
+    display: none;
+  }
+
+  .panel__summary {
+    max-width: 44ch;
+  }
+
+  .panel--vision .panel__title {
+    font-size: var(--step-2);
+  }
+
+  .panel--tooling .panel__title {
+    font-size: var(--step-3);
+  }
+
+  .panel--product .panel__title {
+    font-size: var(--step-4);
+  }
+
+  .panel--vision .panel__mark,
+  .panel--product .panel__mark,
+  .panel--tooling .panel__mark {
+    display: none;
+  }
+
+  .rail {
+    top: calc(var(--header-h) + clamp(1.2rem, 3vh, 2.2rem));
+    right: var(--gutter);
+    transform: none;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .rail__tick {
+    gap: 0.4rem;
+  }
+
+  .rail__tick span {
+    display: none;
+  }
+
+  .work__hud {
+    bottom: 1.1rem;
+    font-size: 0.55rem;
+    gap: 0.4rem 0.9rem;
+  }
+
+  .about__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about__sticky {
+    position: static;
+    padding-bottom: 3rem;
+  }
+
+  .about__canvas {
+    opacity: 0.55;
+  }
+
+  .capability {
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+  }
+
+  .capability .chips {
+    grid-column: 2;
+    grid-row: auto;
+    justify-content: flex-start;
+    max-width: none;
+    padding-top: 0.9rem;
+  }
+
+  .contact__foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  :root {
+    --header-h: 52px;
+  }
+
+  .header {
+    grid-template-columns: auto 1fr;
+  }
+
+  .header__role,
+  .header__status {
+    display: none;
+  }
+
+  .nav {
+    justify-self: end;
+  }
+
+  .nav__list {
+    gap: 0.85rem;
+  }
+
+  .nav__link {
+    font-size: 0.6rem;
+  }
+
+  .nav__link span,
+  .nav__link {
+    letter-spacing: 0.1em;
+  }
+
+  .nav__link i {
+    display: none;
+  }
+
+  .intro {
+    height: 140vh;
+  }
+
+  /*
+   * Mobile is composed, not shrunk: the grid stacks kicker → title → dial →
+   * lede, so the shorter two-tier block buys the dial room. Sized to leave
+   * real air either side of KARTHIKEYA in a 350px column.
+   */
+  .intro__title {
+    font-size: clamp(3rem, 15.5vw, 5rem);
+  }
+
+  .intro__name__line--display {
+    line-height: 0.92;
+  }
+
+  .intro__name__line--mono {
+    margin-top: 1.2rem;
+    /* Proportioned separately: a full +45% here would bring the surname to
+       ~0.27 of the display tier and start competing with it. */
+    font-size: clamp(1rem, 4.4vw, 1.2rem);
+  }
+
+  .scrollcue__track {
+    width: 44px;
+  }
+
+  .work {
+    height: 400vh;
+  }
+
+  .work__hud .hud__item:nth-child(3),
+  .work__hud .hud__item:nth-child(4) {
+    display: none;
+  }
+
+  .panel__meta {
+    margin-top: 1.4rem;
+  }
+
+  .panel--tooling .panel__meta {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.6rem;
+  }
+
+  .contact__mail {
+    font-size: clamp(1.1rem, 6.4vw, 1.6rem);
+  }
+
+  .foot {
+    font-size: 0.56rem;
+  }
+}

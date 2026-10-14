@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Karthikeya Dusi — Software Engineer</title>
+    <meta
+      name="description"
+      content="Karthikeya Dusi builds AI and full-stack software: a container-damage vision system taken from 0.217 to 0.561 mAP50, an offline-first PWA used by twenty students, and an open-source CLI with 1,500+ downloads."
+    />
+    <meta name="theme-color" content="#07090c" />
+    <!--
+      The interface is deliberately dark; the contact coda paints its own paper
+      background. Both are authored by the page, so the UA is told to render
+      its own surface — scrollbars, form controls — dark rather than letting
+      it infer light from one section.
+    -->
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./favicon.svg" />
+
+    <!--
+      Identity metadata. Deliberately limited to values that are verifiable in
+      this repository. There is no canonical URL, no production domain in any
+      config, and no deploy manifest here, so `canonical`, `og:url` and
+      `og:image` are omitted rather than guessed — see the phase report. Every
+      string below is lifted from this file or src/data/content.ts.
+    -->
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content="Karthikeya Dusi — Software Engineer" />
+    <meta
+      property="og:description"
+      content="AI and full-stack software: a container-damage vision system taken from 0.217 to 0.561 mAP50, an offline-first PWA used by twenty students, and an open-source CLI with 1,500+ downloads."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Karthikeya Dusi — Software Engineer" />
+    <meta
+      name="twitter:description"
+      content="AI and full-stack software: a container-damage vision system taken from 0.217 to 0.561 mAP50, an offline-first PWA used by twenty students, and an open-source CLI with 1,500+ downloads."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Karthikeya Dusi",
+        "alternateName": "KARTHIKEYA DUSI",
+        "jobTitle": "Software engineer",
+        "email": "karthikeyadusi@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Visakhapatnam",
+          "addressCountry": "IN"
+        },
+        "knowsAbout": [
+          "Artificial intelligence",
+          "Machine learning",
+          "Computer vision",
+          "Full-stack development",
+          "Developer tooling"
+        ],
+        "sameAs": [
+          "https://github.com/Karthikeyadusi",
+          "https://www.linkedin.com/in/karthikeyadusi/",
+          "https://www.npmjs.com/package/gitrunbykaru"
+        ]
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      />
+    </noscript>
+  </head>
+
+  <body>
+    <a class="skip" href="#intro">Skip to content</a>
+
+    <!-- Fixed chrome ------------------------------------------------------ -->
+    <header class="header" data-header data-section="intro" data-theme="ink">
+      <a class="header__mark" href="#intro">
+        <span class="header__name">Karthikeya Dusi</span>
+        <span class="header__role">Software engineer</span>
+      </a>
+
+      <nav class="nav" aria-label="Sections">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="#intro" data-active="true"><i>01</i>Intro</a></li>
+          <li><a class="nav__link" href="#work"><i>02</i>Work</a></li>
+          <li><a class="nav__link" href="#about"><i>03</i>About</a></li>
+          <li><a class="nav__link" href="#contact"><i>04</i>Contact</a></li>
+        </ul>
+      </nav>
+
+      <span class="header__status"><i class="dot" aria-hidden="true"></i>Open to work</span>
+      <span class="header__bar" data-page-bar aria-hidden="true"></span>
+    </header>
+
+    <!-- Transition layers (aperture blades live here) --------------------- -->
+    <div class="overlays" aria-hidden="true">
+      <div class="overlay" data-overlay="intro"></div>
+      <div class="overlay" data-overlay="contact"></div>
+    </div>
+
+    <main id="main">
+      <!-- 01 — Introduction --------------------------------------------- -->
+      <section id="intro" class="intro" aria-labelledby="intro-title">
+        <div class="intro__card" data-intro-card>
+          <div class="intro__grid" aria-hidden="true"></div>
+
+          <p class="kicker">
+            <span class="kicker__rule" aria-hidden="true"></span>
+            Portfolio <span class="kicker__sep">/</span> 2026
+          </p>
+
+          <h1 class="intro__title" id="intro-title" tabindex="-1" aria-label="Karthikeya Dusi">
+            <span class="intro__name__line intro__name__line--display">
+              <span class="intro__name__inner">KARTHIKEYA</span>
+            </span>
+            <span class="intro__name__line intro__name__line--mono" aria-hidden="true">
+              <span class="intro__name__inner"
+                ><span class="ch">D</span><span class="ch">U</span><span class="ch">S</span><span class="ch">I</span></span
+              >
+            </span>
+          </h1>
+
+          <p class="intro__lede">
+            I build software that gets <em>used</em> — a PWA used by twenty
+            students, a vision model taken from <em>0.217 to 0.561 mAP50</em>,
+            and an open-source CLI past <em>1,500 downloads</em>.
+          </p>
+
+          <div class="intro__aside">
+            <p class="meta-line">
+              <span class="meta-line__k">Based</span>
+              <span class="meta-line__v">Visakhapatnam, India</span>
+            </p>
+            <p class="meta-line">
+              <span class="meta-line__k">Focus</span>
+              <span class="meta-line__v">AI/ML · computer vision · full-stack</span>
+            </p>
+            <p class="meta-line">
+              <span class="meta-line__k">Now</span>
+              <span class="meta-line__v">Software Engineering Intern, My TC</span>
+            </p>
+          </div>
+
+          <!-- Identity device: the measuring dial -->
+          <div class="dial" data-dial>
+            <span class="dial__readout" data-intro-readout>000%</span>
+            <span class="dial__caption">Sequence</span>
+          </div>
+
+          <div class="scrollcue" data-scroll-cue>
+            <span class="scrollcue__label">Scroll</span>
+            <span class="scrollcue__track" aria-hidden="true"><i></i></span>
+          </div>
+
+          <!-- Title-card ticker: the sequence's running head -->
+          <div class="ticker" aria-hidden="true">
+            <div class="ticker__row">
+              <span>Karthikeya Dusi — software, shipped</span>
+              <span>Visakhapatnam · IN</span>
+              <span>AI/ML · Computer vision · Full-stack</span>
+              <span>MMXXVI</span>
+              <span>Interning at My TC</span>
+            </div>
+            <div class="ticker__row" aria-hidden="true">
+              <span>Karthikeya Dusi — software, shipped</span>
+              <span>Visakhapatnam · IN</span>
+              <span>AI/ML · Computer vision · Full-stack</span>
+              <span>MMXXVI</span>
+              <span>Interning at My TC</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 — Selected work --------------------------------------------- -->
+      <section id="work" class="work" aria-labelledby="work-title">
+        <h2 class="sr-only" id="work-title">Selected work</h2>
+
+        <div class="work__stage" data-work-stage>
+          <canvas class="work__canvas" data-work-canvas aria-hidden="true"></canvas>
+          <div class="work__scrim" aria-hidden="true"></div>
+
+          <div class="work__frame" aria-hidden="true">
+            <span class="work__corner work__corner--tl"></span>
+            <span class="work__corner work__corner--tr"></span>
+            <span class="work__corner work__corner--bl"></span>
+            <span class="work__corner work__corner--br"></span>
+          </div>
+
+          <p class="work__eyebrow"><i>02</i>Selected work</p>
+
+          <!-- Project copy. Each panel keeps its own typographic identity. -->
+          <div class="work__panels">
+            <article
+              class="panel panel--vision"
+              style="--accent: #5fe3cf; --tint: #0b2f31"
+              aria-hidden="true"
+              inert
+            >
+              <p class="panel__index"><i>01</i> / 03</p>
+              <h3 class="panel__title"><span>AegisLogix</span></h3>
+              <p class="panel__discipline">Industrial computer vision</p>
+              <p class="panel__summary">
+                A container-damage inspection system. Fine-tuning and dataset
+                work took the model from 0.217 to 0.561 mAP50 overall.
+              </p>
+              <p class="panel__body">
+                FastAPI backend and a React frontend for upload validation,
+                preprocessing and interactive damage visualization. The model
+                is served through an ONNX Runtime pipeline, containerized with
+                Docker and deployed on Render. Correcting bad annotations and
+                rebalancing classes took the Dent class to 0.83 mAP50.
+              </p>
+              <dl class="panel__meta">
+                <div><dt>Role</dt><dd>Full-stack + model training</dd></div>
+                <div><dt>Stack</dt><dd>Python · FastAPI · React · ONNX</dd></div>
+                <div><dt>Outcome</dt><dd>mAP50 0.217 → 0.561</dd></div>
+              </dl>
+              <p class="panel__mark" aria-hidden="true">
+                <svg viewBox="0 0 72 44" width="72" height="44">
+                  <path d="M2 12V2h10M60 2h10v10M70 32v10H60M12 42H2V32" class="mk-bracket" />
+                  <rect x="16" y="13" width="26" height="20" class="mk-box" />
+                  <path d="M16 27h26" class="mk-scan" />
+                  <path d="M46 30h14" class="mk-conf" />
+                  <path d="M46 30h8" class="mk-conf mk-conf--fill" />
+                  <path d="M2 22h6M64 22h6" class="mk-tick" />
+                </svg>
+              </p>
+            </article>
+
+            <article
+              class="panel panel--product"
+              style="--accent: #ff8b4c; --tint: #3d1a10"
+              aria-hidden="true"
+              inert
+            >
+              <p class="panel__index"><i>02</i> / 03</p>
+              <h3 class="panel__title"><span>Attendly</span></h3>
+              <p class="panel__discipline">Offline-first attendance PWA</p>
+              <p class="panel__summary">
+                An offline-first attendance PWA, used by twenty students across
+                three semesters without needing a network.
+              </p>
+              <p class="panel__body">
+                Next.js and TypeScript, with localStorage as the primary store
+                and Firebase as optional sync. Credit-hour-weighted attendance
+                drives the analytics, bunk-risk indicators and recovery
+                timelines, with the business logic kept out of the UI. A cloud
+                AI timetable import was replaced with client-side Tesseract.js
+                OCR and deterministic parsing.
+              </p>
+              <dl class="panel__meta">
+                <div><dt>Used by</dt><dd>20 students</dd></div>
+                <div><dt>For</dt><dd>3 semesters</dd></div>
+                <div><dt>Tests</dt><dd>Vitest</dd></div>
+              </dl>
+              <p class="panel__mark" aria-hidden="true">
+                <svg viewBox="0 0 72 44" width="72" height="44">
+                  <path d="M2 8h68M2 42h68" class="mk-rule" />
+                  <g class="mk-grid">
+                    <rect x="8" y="14" width="7" height="22" />
+                    <rect x="19" y="20" width="7" height="16" />
+                    <rect x="30" y="11" width="7" height="25" />
+                    <rect x="41" y="26" width="7" height="10" />
+                    <rect x="52" y="17" width="7" height="19" />
+                  </g>
+                  <path d="M8 32a30 30 0 0 1 51-9" class="mk-recovery" />
+                </svg>
+              </p>
+            </article>
+
+            <article
+              class="panel panel--tooling"
+              style="--accent: #a892ff; --tint: #241a4d"
+              aria-hidden="true"
+              inert
+            >
+              <p class="panel__index"><i>03</i> / 03</p>
+              <h3 class="panel__title"><span>GitRunByKaru</span></h3>
+              <p class="panel__discipline">Open-source developer CLI</p>
+              <p class="panel__summary">
+                An open-source npm CLI that clones a repo, detects its stack,
+                installs and launches it. 1,500+ downloads.
+              </p>
+              <p class="panel__body">
+                The runtime automates framework detection, verifies that
+                services are actually ready over HTTP, and manages the lifecycle
+                of temporary workspaces. Published to npm and exposed over
+                MCP, so AI coding agents can invoke it as a tool.
+              </p>
+              <dl class="panel__meta">
+                <div><dt>Downloads</dt><dd>1,500+</dd></div>
+                <div><dt>Interface</dt><dd>MCP</dd></div>
+                <div><dt>Runtime</dt><dd>Node.js</dd></div>
+              </dl>
+              <p class="panel__mark" aria-hidden="true">
+                <svg viewBox="0 0 72 44" width="72" height="44">
+                  <rect x="2" y="10" width="68" height="24" class="mk-window" />
+                  <path d="M2 18h68" class="mk-titlebar" />
+                  <path d="M9 27l4 3-4 3" class="mk-caret" />
+                  <path d="M18 30h16M18 24h8" class="mk-cmd" />
+                  <rect x="37" y="27" width="1.6" height="4" class="mk-block" />
+                </svg>
+              </p>
+            </article>
+          </div>
+
+          <!-- Instrument readout + sequence rail -->
+          <div class="work__hud" aria-hidden="true">
+            <span class="hud__item"><i>frame</i><b data-readout="frame">f 000</b></span>
+            <span class="hud__item"><i>yaw</i><b data-readout="angle">000°</b></span>
+            <span class="hud__item"><i>scale</i><b data-readout="scale">1.00×</b></span>
+            <span class="hud__item"><i>state</i><b data-readout="mat">crystal</b></span>
+          </div>
+
+          <ol class="rail" aria-hidden="true">
+            <li class="rail__tick" data-active="false" style="--near: 0">
+              <i>01</i><span>AegisLogix</span><em></em>
+            </li>
+            <li class="rail__tick" data-active="false" style="--near: 0">
+              <i>02</i><span>Attendly</span><em></em>
+            </li>
+            <li class="rail__tick" data-active="false" style="--near: 0">
+              <i>03</i><span>GitRunByKaru</span><em></em>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 03 — About and capabilities ------------------------------------- -->
+      <section id="about" class="about" aria-labelledby="about-title">
+        <div class="about__inner">
+          <div class="about__column" data-about-column>
+            <div class="about__sticky">
+              <canvas class="about__canvas" data-about-canvas aria-hidden="true"></canvas>
+              <p class="kicker"><span class="kicker__rule" aria-hidden="true"></span>03 / About</p>
+              <h2 class="about__title" id="about-title">
+                I build with AI —<br />then I ship it,<br /><em>then I measure it.</em>
+              </h2>
+              <p class="about__note">
+                8.4 CGPA at Andhra University. One internship, three shipped
+                products, two hackathon qualifiers.
+              </p>
+
+              <div class="recognition">
+                <p class="recognition__label">Recognition</p>
+                <ul class="recognition__list">
+                  <li><b>MumbaiHacks 2025</b><span>Round 3 · top 150 of 3,000+</span></li>
+                  <li><b>DP World Hackathon 2026</b><span>Round 2 · BITS Pilani</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="about__body">
+            <p class="about__lede" data-reveal>
+              Most of my work follows the same shape: find something people do
+              by hand, build the smallest version that automates it, then
+              measure whether it helped. Container damage went from 0.217 to
+              0.561 mAP50. An attendance app went from my own use to twenty
+              students.
+            </p>
+
+            <ul class="capabilities">
+              <li class="capability" data-index="0" data-reveal style="--t: 0">
+                <span class="capability__rule" aria-hidden="true"></span>
+                <p class="capability__idx"><i>01</i></p>
+                <h3 class="capability__title">Frontend engineering</h3>
+                <p class="capability__text">
+                  React and Next.js apps built for real users rather than demos —
+                  offline-first storage, client-side OCR, and state that survives
+                  a bad network.
+                </p>
+                <ul class="chips">
+                  <li>React</li>
+                  <li>Next.js</li>
+                  <li>TypeScript</li>
+                  <li>Tailwind CSS</li>
+                </ul>
+              </li>
+              <li class="capability" data-index="1" data-reveal style="--t: 0">
+                <span class="capability__rule" aria-hidden="true"></span>
+                <p class="capability__idx"><i>02</i></p>
+                <h3 class="capability__title">Backend &amp; APIs</h3>
+                <p class="capability__text">
+                  Python and FastAPI services with REST endpoints, from
+                  image-upload validation to inference pipelines served through
+                  ONNX Runtime.
+                </p>
+                <ul class="chips">
+                  <li>FastAPI</li>
+                  <li>Node.js</li>
+                  <li>REST</li>
+                  <li>MySQL</li>
+                </ul>
+              </li>
+              <li class="capability" data-index="2" data-reveal style="--t: 0">
+                <span class="capability__rule" aria-hidden="true"></span>
+                <p class="capability__idx"><i>03</i></p>
+                <h3 class="capability__title">Computer vision &amp; ML</h3>
+                <p class="capability__text">
+                  Detection models fine-tuned with Ultralytics, exported to ONNX
+                  for inference, and evaluated on metrics I actually tracked.
+                </p>
+                <ul class="chips">
+                  <li>OpenCV</li>
+                  <li>YOLOv5/v8</li>
+                  <li>ONNX</li>
+                  <li>Ultralytics</li>
+                </ul>
+              </li>
+              <li class="capability" data-index="3" data-reveal style="--t: 0">
+                <span class="capability__rule" aria-hidden="true"></span>
+                <p class="capability__idx"><i>04</i></p>
+                <h3 class="capability__title">Developer tooling</h3>
+                <p class="capability__text">
+                  CLI runtimes, Docker and deployment pipelines — plus an MCP
+                  server so coding agents can drive the tooling directly.
+                </p>
+                <ul class="chips">
+                  <li>Git</li>
+                  <li>Docker</li>
+                  <li>npm</li>
+                  <li>MCP</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 — Contact ---------------------------------------------------- -->
+      <section id="contact" class="contact" aria-labelledby="contact-title">
+        <div class="contact__panel" data-contact-panel>
+          <div class="contact__inner">
+            <p class="kicker kicker--ink">
+              <span class="kicker__rule" aria-hidden="true"></span>04 / Contact
+            </p>
+
+            <h2 class="contact__title" id="contact-title">
+              Let's build something<br /><em>that ships.</em>
+            </h2>
+
+            <p class="contact__lede">
+              Open to internships now and full-time roles after I graduate in
+              2027. Currently interning at My TC.
+            </p>
+
+            <a class="contact__mail" href="mailto:karthikeyadusi@gmail.com">
+              <span>karthikeyadusi@gmail.com</span>
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <path d="M5 19L19 5M19 5H8M19 5v11" />
+              </svg>
+            </a>
+
+            <ul class="contact__links">
+              <li><a href="https://github.com/Karthikeyadusi">GitHub</a></li>
+              <li><a href="https://www.linkedin.com/in/karthikeyadusi/">LinkedIn</a></li>
+              <li><a href="https://www.npmjs.com/package/gitrunbykaru">npm</a></li>
+            </ul>
+
+            <div class="contact__foot">
+              <svg
+                class="contact__mark"
+                data-contact-mark
+                viewBox="-60 -60 120 120"
+                aria-hidden="true"
+              >
+                <path
+                  d="M0 -52 L45 -26 L45 26 L0 52 L-45 26 L-45 -26 Z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1"
+                />
+                <circle r="26" fill="none" stroke="currentColor" stroke-width="1" opacity=".45" />
+                <circle r="4" fill="currentColor" />
+              </svg>
+              <p class="contact__colophon">
+                Built as a single scrolling take. Type set in Instrument Serif and
+                JetBrains Mono. Every visual generated at run time — no images.
+              </p>
+              <div class="contact__actions">
+                <a class="totop totop--link" href="./Karthikeya-Dusi-Resume.pdf" download>
+                  <span>Résumé</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path d="M12 5v14M6 13l6 6 6-6" />
+                  </svg>
+                </a>
+                <button class="totop" type="button" data-back-to-top>
+                  <span>Back to the top</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path d="M12 19V5M6 11l6-6 6 6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact__horizon" data-horizon aria-hidden="true"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>© 2026 Karthikeya Dusi — Visakhapatnam, India</p>
+      <p>Set in one continuous scroll.</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

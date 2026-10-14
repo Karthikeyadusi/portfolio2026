@@ -1,0 +1,21 @@
+{
+  "name": "aperture-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Aperture — a scroll-driven cinematic portfolio for Karthikeya Dusi.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "verify": "node tools/verify.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10",
+    "vitest": "^2.1.4"
+  }
+}
