@@ -8,7 +8,13 @@
       name="description"
       content="Karthikeya Dusi builds AI and full-stack software: a container-damage vision system taken from 0.217 to 0.561 mAP50, an offline-first PWA used by twenty students, and an open-source CLI with 1,500+ downloads."
     />
-    <meta name="theme-color" content="#07090c" />
+    <!--
+      Matches the page ground exactly. Left at the old #07090c it tinted the
+      mobile browser's own chrome a shade bluer than the black page it was
+      framing, which was visible from the phone in a way it never was on a
+      desktop monitor.
+    -->
+    <meta name="theme-color" content="#000000" />
     <!--
       The interface is deliberately dark; the contact coda paints its own paper
       background. Both are authored by the page, so the UA is told to render
@@ -186,8 +192,15 @@
     <main id="main">
       <!-- 01 — Introduction --------------------------------------------- -->
       <section id="intro" class="intro" aria-labelledby="intro-title">
-        <div class="intro__card" data-intro-card>
-          <div class="intro__grid" aria-hidden="true"></div>
+            <div class="intro__card" data-intro-card>
+              <!--
+                Nothing here.
+
+                The intro is an unbroken true-black field on purpose. There is no
+                background texture and no canvas: the section holds only the
+                type, the dial and the scroll cue, and the only light in it is
+                the light the type casts.
+              -->
 
           <p class="kicker">
             <span class="kicker__rule" aria-hidden="true"></span>

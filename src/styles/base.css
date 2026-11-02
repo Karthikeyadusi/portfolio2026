@@ -144,7 +144,11 @@ em {
   height: var(--header-h);
   padding: 0 var(--gutter);
   color: var(--fg);
-  background: linear-gradient(to bottom, rgba(7, 9, 12, 0.86), rgba(7, 9, 12, 0.52));
+  /* Was rgba(7, 9, 12, …) — a literal copy of the old --ink-900, which left the
+     header fractionally lighter than the ground it sat on once the page went
+     true black. Both read the same value now, by hand rather than by token,
+     because the alpha fade is the point. */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.52));
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
   transition: color 0.5s var(--ease-in-out), background-color 0.5s var(--ease-in-out);

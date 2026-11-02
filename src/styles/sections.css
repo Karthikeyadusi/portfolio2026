@@ -5,6 +5,12 @@
 
 /* ======================================================== 01 — INTRO ==== */
 
+/*
+ * The intro's background is nothing at all: no texture, no grid, no canvas.
+ * `.intro` resolves to the page's true black, so the section is an unbroken
+ * field and the only light in it is the light the type casts. Nothing here
+ * should grow a background — the verification harness asserts the absence.
+ */
 .intro {
   position: relative;
   height: 150vh;
@@ -24,17 +30,6 @@
     'lede   meta';
   column-gap: clamp(1.5rem, 5vw, 5rem);
   padding: calc(var(--header-h) + 4vh) var(--gutter) clamp(6rem, 11vh, 8.5rem);
-}
-
-.intro__grid {
-  position: absolute;
-  inset: -12%;
-  background-image:
-    linear-gradient(to right, var(--line-soft) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--line-soft) 1px, transparent 1px);
-  background-size: clamp(70px, 8vw, 104px) clamp(70px, 8vw, 104px);
-  -webkit-mask-image: radial-gradient(ellipse 68% 62% at 42% 46%, #000 0%, transparent 76%);
-  mask-image: radial-gradient(ellipse 68% 62% at 42% 46%, #000 0%, transparent 76%);
 }
 
 .intro .kicker {
@@ -398,10 +393,10 @@
   overflow: hidden;
   --stage-accent: var(--amber);
   --stage-edge: var(--line-strong);
-  --stage-bg: #07090c;
-  --scrim-near: rgba(7, 9, 12, 0.86);
-  --scrim-edge: rgba(7, 9, 12, 0.34);
-  --scrim-far: rgba(7, 9, 12, 0);
+  --stage-bg: #000000;
+  --scrim-near: rgba(0, 0, 0, 0.86);
+  --scrim-edge: rgba(0, 0, 0, 0.34);
+  --scrim-far: rgba(0, 0, 0, 0);
   --stage-out: 1;
 }
 

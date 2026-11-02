@@ -4,9 +4,13 @@
    ========================================================================= */
 
 :root {
-  /* Ground */
+  /* Ground.
+     True black, deliberately. This was #07090c — a blue-tinted near-black at
+     ~2.7% luminance — which read as a bluish grey rather than as black on a
+     good display, and which the header gradient then had to duplicate as a
+     literal to stay in step. Both are now #000. */
   --ink-950: #05070a;
-  --ink-900: #07090c;
+  --ink-900: #000000;
   --ink-850: #0a0d12;
   --ink-800: #0e1219;
   --ink-700: #161b24;

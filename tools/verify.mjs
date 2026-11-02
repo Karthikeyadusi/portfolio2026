@@ -1140,6 +1140,13 @@ const main = async () => {
       `min lit ${Math.min(...rHashesFwd.map((s) => s.lit))}`);
     await page.scrollTo(geom.work.top + Math.round(workTravel * 0.585));
     await page.screenshot('08-reduced-motion');
+    // Put the preference back. Everything after this point is checking the
+    // normal-motion page, and a suite that forgets to restore its own emulation
+    // silently re-runs the whole remainder of the harness under `reduce`.
+    await page.setReducedMotion(false);
+    await page.goto(base);
+    await page.until('window.__aperture && window.__aperture.work');
+    await sleep(600);
 
     /* ------------------------------------------------------- console ----- */
     console.log('\nRuntime health');
@@ -1381,7 +1388,96 @@ const main = async () => {
       }
     }
 
-    /* ------------------------------------------------------ metadata ------ */
+/* --------------------------------------------- the intro has no surface --- */
+    // The intro is a true-black field and nothing else. No canvas in it, and no
+    // GL context requested from one, asserted rather than assumed: a shader
+    // creeping back in is the easiest regression to make here and the hardest to
+    // notice, because an effect that only draws under the pointer still looks
+    // like a correct black section at rest.
+    console.log('\nIntro surface');
+    const glStub = await page.send('Page.addScriptToEvaluateOnNewDocument', {
+      source: `(() => {
+        window.__glRequests = [];
+        const real = HTMLCanvasElement.prototype.getContext;
+        HTMLCanvasElement.prototype.getContext = function (type, ...rest) {
+          if (typeof type === 'string' && type.toLowerCase().includes('webgl')) {
+            window.__glRequests.push({
+              type,
+              intro: this.closest('[data-intro-card]') !== null,
+            });
+          }
+          return real.call(this, type, ...rest);
+        };
+      })();`,
+    });
+
+    await page.setViewport(1440, 900, false);
+    await page.goto(base);
+    await page.until('window.__aperture && window.__aperture.work');
+    await sleep(900);
+
+    const drag = async (steps, fromX, fromY, toX, toY, pause) => {
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        await page.send('Input.dispatchMouseEvent', {
+          type: 'mouseMoved',
+          x: Math.round(fromX + (toX - fromX) * t),
+          y: Math.round(fromY + (toY - fromY) * t),
+          buttons: 0,
+        });
+        await sleep(pause);
+      }
+    };
+
+    // Move across the intro first. "No surface" has to hold under the one input
+    // that used to summon one, not just on a page nobody has touched.
+    await drag(24, 300, 420, 1100, 470, 16);
+    await sleep(400);
+
+    const surface = await page.evaluate(`
+      const section = document.querySelector('.intro');
+      const card = document.querySelector('[data-intro-card]');
+      const intro = getComputedStyle(section);
+      const cardStyle = getComputedStyle(card);
+      const gl = window.__glRequests || [];
+      return {
+        canvases: document.querySelectorAll('.intro canvas, [data-intro-card] canvas').length,
+        glInIntro: gl.filter((r) => r.intro).length,
+        glTotal: gl.length,
+        hasGridElement: !!document.querySelector('.intro__grid'),
+        introBackgroundImage: intro.backgroundImage,
+        cardBackgroundImage: cardStyle.backgroundImage,
+        cardBackgroundColor: cardStyle.backgroundColor,
+        bodyBackground: getComputedStyle(document.body).backgroundColor,
+      };
+    `);
+
+    check('the intro mounts no canvas at all', surface.canvases === 0,
+      `${surface.canvases} canvases inside the intro`);
+    check('the intro never asks for a WebGL context', surface.glInIntro === 0,
+      `${surface.glTotal} GL contexts requested in the document, ${surface.glInIntro} of them from the intro`);
+    check('the intro carries no background grid', surface.hasGridElement === false,
+      surface.hasGridElement ? '.intro__grid is still present' : 'no grid element');
+    check('the intro and its card paint no background of their own',
+      surface.introBackgroundImage === 'none' && surface.cardBackgroundImage === 'none',
+      `intro ${surface.introBackgroundImage} / card ${surface.cardBackgroundImage}`);
+    check('the intro ground is true black',
+      surface.cardBackgroundColor === 'rgba(0, 0, 0, 0)' && surface.bodyBackground === 'rgb(0, 0, 0)',
+      `card transparent=${surface.cardBackgroundColor === 'rgba(0, 0, 0, 0)'}, body ${surface.bodyBackground}`);
+
+    if (glStub && glStub.identifier) {
+      await page.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: glStub.identifier });
+    }
+
+    await page.setViewport(1440, 900, false);
+    await page.goto(base);
+    await page.until('window.__aperture && window.__aperture.work');
+    await sleep(700);
+    await page.setViewport(1440, 900, false);
+    await page.goto(base);
+    await page.until('window.__aperture && window.__aperture.work');
+    await sleep(700);
+
     console.log('\nIdentity metadata');
     const meta = await page.evaluate(`
       const attr = (sel, a) => document.querySelector(sel)?.getAttribute(a) ?? null;
